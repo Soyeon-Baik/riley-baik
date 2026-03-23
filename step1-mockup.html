@@ -1,0 +1,133 @@
+<!-- Step 1 — Multimodal Input Interactive Mockup (fixed height 580px) -->
+<style>
+.ue-phone{background:#fff;border-radius:40px;border:8px solid #1a1a1a;width:280px;height:580px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column}
+.ue-status{background:#000;padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ue-status span{color:#fff;font-size:11px;font-weight:500}
+.ue-header{background:#000;padding:12px 16px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ue-back{width:28px;height:28px;border-radius:50%;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.ue-scrollarea{background:#fff;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ue-scrollarea::-webkit-scrollbar{width:3px}
+.ue-scrollarea::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+.ue-panel{display:none;flex-direction:column;height:100%}
+.ue-panel.active{display:flex}
+.ue-dot{width:7px;height:7px;border-radius:50%;background:#ddd;cursor:pointer;transition:background .2s}
+.ue-dot.active{background:#000}
+.ue-import-btn{margin:12px 16px;padding:14px;background:#000;border-radius:12px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.ue-input-option{margin:0 16px 10px;padding:13px 14px;border:1px solid #e8e8e8;border-radius:12px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.ue-input-option:hover{border-color:#000}
+.ue-badge-green{background:#06C167;color:#fff;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.ue-badge-yellow{background:#FFC400;color:#000;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.ue-nav-btn{padding:6px 16px;border:1px solid #e0e0e0;border-radius:20px;background:#fff;font-size:12px;cursor:pointer;color:#333}
+</style>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 0">
+  <div style="display:flex;gap:6px" id="ue-dots">
+    <div class="ue-dot active" onclick="ueGoTo(0)"></div>
+    <div class="ue-dot" onclick="ueGoTo(1)"></div>
+    <div class="ue-dot" onclick="ueGoTo(2)"></div>
+  </div>
+  <div class="ue-phone">
+    <div class="ue-status"><span>9:41</span><span>●●●</span></div>
+    <div id="ue-s0" class="ue-panel active">
+      <div class="ue-header">
+        <div style="flex:1"><div style="color:#888;font-size:11px">Delivering to</div><div style="color:#fff;font-size:14px;font-weight:600">Home <span style="font-size:10px">▼</span></div></div>
+        <div style="width:32px;height:32px;border-radius:50%;border:1.5px solid #333;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#fff" stroke-width="1"/></svg></div>
+      </div>
+      <div class="ue-scrollarea">
+        <div style="padding:12px 16px 8px;display:flex;gap:8px">
+          <div style="padding:6px 14px;background:#000;border-radius:20px;font-size:12px;color:#fff;white-space:nowrap">All</div>
+          <div style="padding:6px 14px;border:1px solid #e8e8e8;border-radius:20px;font-size:12px;color:#333;white-space:nowrap">Rides</div>
+          <div style="padding:6px 14px;border:1px solid #e8e8e8;border-radius:20px;font-size:12px;color:#333;white-space:nowrap">Grocery</div>
+        </div>
+        <div style="margin:4px 16px 0;padding:10px 12px;background:#f5f5f5;border-radius:10px;display:flex;align-items:center;gap:8px">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="#888" stroke-width="1.5"/><path d="M10 10l2.5 2.5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span style="font-size:13px;color:#888">Search grocery items</span>
+        </div>
+        <div class="ue-import-btn" onclick="ueGoTo(1)">
+          <div style="width:32px;height:32px;border-radius:8px;background:#06C167;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M8 5v6M5 8h6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><div style="color:#fff;font-size:13px;font-weight:600">Import your list</div><div style="color:#888;font-size:11px">Upload photo or paste text</div></div>
+          <div style="margin-left:auto;color:#888;font-size:16px">›</div>
+        </div>
+        <div style="font-size:11px;color:#888;padding:0 16px;margin:4px 0 8px;font-weight:500;letter-spacing:.4px;text-transform:uppercase">Stores near you</div>
+        <div style="padding:0 16px">
+          <div style="display:flex;align-items:center;padding:10px 0;border-bottom:0.5px solid #f0f0f0">
+            <div style="width:36px;height:36px;border-radius:8px;background:#e8132b;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-right:10px">FM</div>
+            <div><div style="font-size:13px;font-weight:500">Fred Meyer</div><div style="font-size:11px;color:#888">50 min · 0.8 mi</div></div>
+          </div>
+          <div style="display:flex;align-items:center;padding:10px 0">
+            <div style="width:36px;height:36px;border-radius:8px;background:#c8102e;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-right:10px">SW</div>
+            <div><div style="font-size:13px;font-weight:500">Safeway</div><div style="font-size:11px;color:#888">42 min · 1.2 mi</div></div>
+          </div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+    </div>
+    <div id="ue-s1" class="ue-panel">
+      <div class="ue-header">
+        <div class="ue-back" onclick="ueGoTo(0)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="color:#fff;font-size:15px;font-weight:600">Import your list</div>
+      </div>
+      <div class="ue-scrollarea" style="padding-top:16px">
+        <div style="padding:0 16px 12px;font-size:13px;color:#555">How would you like to add your grocery list?</div>
+        <div class="ue-input-option" onclick="ueGoTo(2)">
+          <div style="width:36px;height:36px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="#333" stroke-width="1.5"/><path d="M6 7h6M6 10h4" stroke="#333" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><div style="font-size:13px;font-weight:500;color:#000">Paste or type a list</div><div style="font-size:11px;color:#888">e.g. milk, eggs, bread...</div></div>
+          <div style="margin-left:auto;color:#ccc;font-size:16px">›</div>
+        </div>
+        <div class="ue-input-option" onclick="ueGoTo(2)">
+          <div style="width:36px;height:36px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="11" rx="2" stroke="#333" stroke-width="1.5"/><circle cx="9" cy="9.5" r="2.5" stroke="#333" stroke-width="1.5"/><path d="M7 4V3h4v1" stroke="#333" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><div style="font-size:13px;font-weight:500;color:#000">Take or upload a photo</div><div style="font-size:11px;color:#888">Handwritten or printed list</div></div>
+          <div style="margin-left:auto;color:#ccc;font-size:16px">›</div>
+        </div>
+        <div class="ue-input-option" onclick="ueGoTo(2)">
+          <div style="width:36px;height:36px;border-radius:8px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="#333" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="#333" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div><div style="font-size:13px;font-weight:500;color:#000">Import from notes app</div><div style="font-size:11px;color:#888">Apple Notes, Google Keep...</div></div>
+          <div style="margin-left:auto;color:#ccc;font-size:16px">›</div>
+        </div>
+        <div style="margin:16px;padding:12px;background:#f9f9f9;border-radius:10px">
+          <div style="font-size:12px;color:#555;line-height:1.5">AI will parse your list and match items to available products. You'll review matches before anything is added to your cart.</div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+    </div>
+    <div id="ue-s2" class="ue-panel">
+      <div class="ue-header">
+        <div class="ue-back" onclick="ueGoTo(1)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="color:#fff;font-size:15px;font-weight:600">Review your list</div>
+      </div>
+      <div class="ue-scrollarea">
+        <div style="padding:10px 16px;background:#f5f5f5;border-bottom:0.5px solid #e8e8e8"><div style="font-size:11px;color:#888">10 items found · 2 need your attention</div></div>
+        <div style="padding:0 16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid #f0f0f0"><div><div style="font-size:13px">Whole milk (1 gal)</div><div style="font-size:11px;color:#888">Organic Valley · $5.49</div></div><span class="ue-badge-green">matched</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid #f0f0f0"><div><div style="font-size:13px">Sourdough bread</div><div style="font-size:11px;color:#888">Dave's Killer · $6.99</div></div><span class="ue-badge-green">matched</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid #f0f0f0"><div><div style="font-size:13px">Ground beef (1 lb)</div><div style="font-size:11px;color:#888">85% lean · $8.99</div></div><span class="ue-badge-green">matched</span></div>
+          <div style="padding:11px 0;border-bottom:0.5px solid #f0f0f0">
+            <div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px">Green onions</div><div style="font-size:11px;color:#FFC400">Low confidence match</div></div><span class="ue-badge-yellow">review</span></div>
+            <div style="margin-top:6px;display:flex;gap:6px"><div style="flex:1;padding:6px;border:1px solid #06C167;border-radius:8px;text-align:center;font-size:11px;color:#06C167;cursor:pointer">Scallions</div><div style="flex:1;padding:6px;border:1px solid #e8e8e8;border-radius:8px;text-align:center;font-size:11px;color:#555;cursor:pointer">Search</div></div>
+          </div>
+          <div style="padding:11px 0;border-bottom:0.5px solid #f0f0f0">
+            <div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px">Big eggs</div><div style="font-size:11px;color:#FFC400">Clarification needed</div></div><span class="ue-badge-yellow">clarify</span></div>
+            <div style="margin-top:6px;display:flex;gap:6px"><div style="flex:1;padding:6px;border:1px solid #06C167;border-radius:8px;text-align:center;font-size:11px;color:#06C167;cursor:pointer">Large (12ct)</div><div style="flex:1;padding:6px;border:1px solid #e8e8e8;border-radius:8px;text-align:center;font-size:11px;color:#555;cursor:pointer">Jumbo (12ct)</div></div>
+          </div>
+        </div>
+        <div style="padding:12px 16px 20px"><div style="padding:13px;background:#000;border-radius:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:#fff">Find best store for my list →</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="ue-nav-btn" onclick="ueGoTo(Math.max(0,ueCur-1))">← Back</button>
+    <button class="ue-nav-btn" onclick="ueGoTo(Math.min(2,ueCur+1))">Next →</button>
+  </div>
+</div>
+<script>
+var ueCur=0;
+function ueGoTo(n){
+  ueCur=n;
+  [0,1,2].forEach(function(i){
+    document.getElementById('ue-s'+i).classList.toggle('active',i===n);
+    document.querySelectorAll('.ue-dot')[i].classList.toggle('active',i===n);
+  });
+  var areas=document.querySelectorAll('.ue-scrollarea');
+  if(areas[n]) areas[n].scrollTop=0;
+}
+</script>

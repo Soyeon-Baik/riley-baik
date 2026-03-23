@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>Hybrid AI-Search at Samsung.com — Riley Baik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f2f1ee; --surface:#eae9e5; --ink:#1a1917; --ink-muted:#7a7874; --radius:14px; color-scheme:light only; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; color-scheme:light only; }
+  body { background:#f2f1ee !important; color:#1a1917 !important; font-family:'DM Sans',sans-serif; font-weight:300; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  @media (prefers-color-scheme: dark) { html, body { background:#f2f1ee !important; color:#1a1917 !important; } }
+
+  /* ── Nav ── */
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:20px 48px; background:rgba(242,241,238,0.85); backdrop-filter:blur(12px); }
+  .nav-name { font-family:'DM Serif Display',serif; font-style:italic; font-size:18px; letter-spacing:-0.02em; color:var(--ink); text-decoration:none; cursor:pointer; }
+  .nav-links { display:flex; gap:8px; align-items:center; }
+  .nav-links a { text-decoration:none; font-size:14px; font-weight:400; color:var(--ink-muted); padding:6px 16px; border-radius:99px; background:var(--surface); transition:all 0.2s; cursor:pointer; }
+  .nav-links a:hover { color:var(--ink); background:#dddbd6; }
+  .nav-links .resume-btn { background:var(--ink); color:var(--bg); }
+  .nav-links .resume-btn:hover { background:#333; color:#fff; }
+
+  /* ── Hero ── */
+  .detail-hero { padding-top:100px; min-height:480px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:64px; padding-left:48px; padding-right:48px; position:relative; overflow:hidden; }
+  .detail-hero-bg { position:absolute; inset:0; z-index:0; }
+  .detail-hero-content { position:relative; z-index:1; max-width:1200px; margin:0 auto; width:100%; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:400; color:rgba(255,255,255,0.6); cursor:pointer; margin-bottom:40px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:8px 16px; border-radius:99px; transition:all 0.2s; width:fit-content; text-decoration:none; }
+  .back-btn:hover { background:rgba(255,255,255,0.18); color:#fff; }
+  .detail-company { font-size:12px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:16px; }
+  .detail-title { font-family:'DM Serif Display',serif; font-style:italic; font-size:clamp(36px,5vw,64px); line-height:1.05; letter-spacing:-0.02em; color:#fff; margin-bottom:20px; }
+  .detail-subtitle { font-size:18px; font-weight:300; color:rgba(255,255,255,0.6); max-width:640px; line-height:1.6; margin-bottom:20px; }
+  .detail-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .detail-tag { font-size:12px; padding:5px 14px; border-radius:99px; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.1); }
+
+  /* ── Body ── */
+  .detail-body { max-width:1200px; margin:0 auto; padding:72px 48px 120px; }
+  .detail-grid { display:grid; grid-template-columns:200px 1fr; gap:48px; align-items:start; }
+  .detail-main { min-width:0; }
+
+  /* ── Sticky Sidebar Nav ── */
+  .sidebar-nav { position:sticky; top:100px; height:fit-content; max-height:calc(100vh - 120px); overflow-y:auto; padding:4px 0; display:flex; flex-direction:column; }
+  .sidebar-nav a { display:block; font-size:13px; font-weight:400; color:var(--ink-muted); text-decoration:none; padding:8px 0; line-height:1.4; opacity:0.45; transition:all 0.25s ease; border-left:2px solid transparent; padding-left:12px; }
+  .sidebar-nav a.active { color:var(--ink); font-weight:500; opacity:1; border-left-color:var(--ink); }
+  .sidebar-nav a.past { opacity:0.65; color:var(--ink-muted); }
+  .sidebar-nav a:hover { opacity:0.85; color:var(--ink); }
+
+  /* ── Sections ── */
+  .detail-section { margin-bottom:96px; scroll-margin-top:100px; }
+  .detail-section-label { display:flex; align-items:center; gap:16px; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:20px; padding-bottom:0; border-bottom:none; }
+  .detail-section-label::after { content:''; flex:1; height:1px; background:rgba(0,0,0,0.2); }
+  .detail-section p { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:16px; }
+  .detail-section p strong { font-weight:500; color:var(--ink); }
+  .detail-section h3 { font-size:19px; font-weight:600; line-height:1.3; margin:28px 0 12px; color:var(--ink); }
+
+  /* ── Lists ── */
+  .detail-section ul { margin:0 0 20px 20px; }
+  .detail-section ul.square { list-style-type:square; }
+  .detail-section li { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:8px; }
+  .detail-section li strong { font-weight:500; color:var(--ink); }
+  .detail-section ol { margin:0 0 20px 20px; }
+  .detail-section ol li { margin-bottom:10px; }
+
+  /* ── Blockquotes ── */
+  .detail-section blockquote { border-left:3px solid var(--ink); padding:4px 0 4px 20px; margin:28px 0; }
+  .detail-section blockquote p { font-family:'DM Sans',sans-serif; font-style:italic; font-size:16px; font-weight:400; color:var(--ink); margin:0; line-height:1.7; }
+
+  /* ── Tables ── */
+  .detail-section table { width:100%; border-collapse:collapse; margin:20px 0 28px; font-size:14px; }
+  .detail-section thead th { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); text-align:left; padding:12px 16px; border-bottom:2px solid rgba(0,0,0,0.1); background:var(--surface); }
+  .detail-section thead th:first-child { border-radius:var(--radius) 0 0 0; }
+  .detail-section thead th:last-child { border-radius:0 var(--radius) 0 0; }
+  .detail-section tbody td { padding:12px 16px; border-bottom:1px solid rgba(0,0,0,0.06); color:var(--ink-muted); font-weight:300; line-height:1.65; vertical-align:top; }
+  .detail-section tbody td strong { font-weight:500; color:var(--ink); }
+  .detail-section tbody tr:last-child td { border-bottom:none; }
+  .detail-section tbody tr:hover { background:rgba(0,0,0,0.015); }
+
+  /* ── Code blocks ── */
+  .detail-section pre { background:var(--surface); color:var(--ink); border-radius:var(--radius); padding:24px 28px; margin:20px 0 28px; overflow-x:auto; font-size:13px; line-height:1.8; font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace; }
+  .detail-section code { font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace; font-size:13px; }
+  .detail-section p code { background:var(--surface); padding:2px 8px; border-radius:6px; font-size:14px; color:var(--ink); }
+
+  /* ── Horizontal rule ── */
+  .section-divider { border:none; border-top:1px solid rgba(0,0,0,0.08); margin:0 0 56px; }
+
+  /* ── Contact & Footer ── */
+  .contact-strip { background:var(--ink); padding:80px 48px; }
+  .contact-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px; }
+  .contact-left h3 { font-family:'DM Serif Display',serif; font-style:italic; font-size:48px; color:var(--bg); line-height:1.1; letter-spacing:-0.02em; margin-bottom:12px; }
+  .contact-left p { font-size:15px; color:rgba(242,241,238,0.45); max-width:360px; }
+  .contact-links { display:flex; gap:12px; flex-wrap:wrap; }
+  .contact-link { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:400; padding:12px 24px; border-radius:99px; text-decoration:none; transition:all 0.2s; }
+  .contact-link.primary { background:var(--bg); color:var(--ink); }
+  .contact-link.primary:hover { background:#fff; }
+  .contact-link.secondary { background:rgba(255,255,255,0.08); color:rgba(242,241,238,0.8); border:1px solid rgba(255,255,255,0.1); }
+  .contact-link.secondary:hover { background:rgba(255,255,255,0.15); color:#fff; }
+  footer { background:var(--ink); border-top:1px solid rgba(255,255,255,0.05); padding:24px 48px; display:flex; align-items:center; justify-content:space-between; }
+  footer .foot-name { font-family:'DM Serif Display',serif; font-style:italic; color:rgba(242,241,238,0.3); font-size:14px; }
+  footer .foot-copy { font-size:12px; color:rgba(242,241,238,0.2); }
+
+  /* ── Animations ── */
+  .fade-up { opacity:0; transform:translateY(24px); animation:fadeUp 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+  .fade-up:nth-child(1){animation-delay:0.1s} .fade-up:nth-child(2){animation-delay:0.2s} .fade-up:nth-child(3){animation-delay:0.3s} .fade-up:nth-child(4){animation-delay:0.4s} .fade-up:nth-child(5){animation-delay:0.5s}
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  /* ── Responsive ── */
+  @media (max-width:900px) {
+    nav{padding:16px 24px}
+    .detail-hero{padding-left:24px;padding-right:24px}
+    .detail-body{padding:48px 24px 80px}
+    .detail-grid{grid-template-columns:1fr;gap:48px}
+    .sidebar-nav{display:none}
+    .contact-inner{flex-direction:column;align-items:flex-start}
+    .contact-strip{padding:60px 24px}
+    footer{padding:20px 24px}
+    .detail-section table { font-size:13px; }
+    .detail-section thead th, .detail-section tbody td { padding:10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a class="nav-name" href="index.html">Riley Baik</a>
+  <div class="nav-links">
+    <a href="index.html">Work</a>
+    <a href="index.html">Writing</a>
+    <a href="index.html">About</a>
+    <a class="resume-btn" href="#">Resume</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="detail-hero">
+  <div class="detail-hero-bg" style="background:linear-gradient(135deg,#0d1117 0%,#0d1f3c 100%)">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(56,119,224,0.2) 0%,transparent 65%)"></div>
+  </div>
+  <div class="detail-hero-content">
+    <a class="back-btn fade-up" href="index.html">&larr; Back to work</a>
+    <div class="detail-company fade-up">Samsung Electronics America &middot; 2022–2024</div>
+    <h1 class="detail-title fade-up">Hybrid AI-Search<br>at Samsung.com</h1>
+    <p class="detail-subtitle fade-up">Improving on-site search relevance by selectively augmenting lexical retrieval with semantic understanding</p>
+    <div class="detail-tags fade-up">
+      <span class="detail-tag">AI/ML</span>
+      <span class="detail-tag">Search</span>
+      <span class="detail-tag">E-commerce</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Body ── -->
+<div class="detail-body">
+  <div class="detail-grid">
+
+    <!-- ── Sticky Sidebar Nav ── -->
+    <aside class="sidebar-nav">
+      <a href="#section-1" data-nav="section-1">The Problem</a>
+      <a href="#section-2" data-nav="section-2">Solution Strategy</a>
+      <a href="#section-3" data-nav="section-3">Why This Approach</a>
+      <a href="#section-4" data-nav="section-4">Impact</a>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <div class="detail-main">
+
+      <!-- 1. The Problem -->
+      <div class="detail-section" id="section-1">
+        <div class="detail-section-label">The Problem</div>
+        <p>Samsung.com's on-site search was built primarily on lexical matching. That worked well for exact queries, but often broke down when intent was ambiguous. A search like "Galaxy Watch" could return a mix of phones, watches, and TVs because the engine matched shared tokens rather than actual shopping intent.</p>
+        <p>As the catalog expanded, the short-term fix was to layer on rules: category dictionaries, synonym maps, homonym handling, and redirect logic. Each rule addressed a specific failure case, but the system became increasingly brittle. Fixing one query could create regressions elsewhere, and maintaining relevance meant maintaining a growing set of exceptions that did not scale.</p>
+      </div>
+
+      <!-- 2. Solution Strategy -->
+      <div class="detail-section" id="section-2">
+        <div class="detail-section-label">Solution Strategy</div>
+        <p>Rather than replacing the search stack entirely, I focused on identifying where lexical search was actually failing users and applying AI only to those cases.</p>
+
+        <h3>Step 1 — Identify the failure surface</h3>
+        <p>I used low search-result CTR as a proxy for intent mismatch. Queries with impressions but weak click engagement often indicated that results were technically related, but not aligned with what users actually meant. These queries became the target set for intervention.</p>
+
+        <h3>Step 2 — Validate the concept</h3>
+        <p>I ran an initial proof of concept using semantic embeddings (SBERT) to test whether vector retrieval could better resolve ambiguous, intent-heavy queries than lexical matching alone.</p>
+
+        <h3>Step 3 — Design a hybrid routing model</h3>
+        <p>I partnered with Samsung's AI Research team to implement a hybrid search flow: low-CTR, high-ambiguity queries were routed to an in-house vector search model, while exact-match queries continued through the existing lexical pipeline. This let us improve relevance where semantic understanding mattered most without disrupting high-performing keyword behavior.</p>
+      </div>
+
+      <!-- 3. Why This Approach -->
+      <div class="detail-section" id="section-3">
+        <div class="detail-section-label">Why This Approach</div>
+        <p>A full replacement would have introduced unnecessary risk. Lexical search still performed well for exact product queries like "Galaxy S24 256GB", where precision and determinism mattered most. The better product decision was not to replace search with AI everywhere, but to selectively augment the experience where users were most likely to encounter intent mismatch.</p>
+        <p>To reduce launch risk, I rolled the hybrid routing model out in phases — 5%, 20%, and then 50% of eligible query traffic — validating relevance and engagement performance at each stage before expanding exposure.</p>
+        <p>The result was a more scalable search strategy: preserving the speed and reliability of lexical search while using AI to improve the subset of queries where rules were no longer enough.</p>
+      </div>
+
+      <!-- 4. Impact -->
+      <div class="detail-section" id="section-4">
+        <div class="detail-section-label">Impact</div>
+        <p>I evaluated the rollout across three layers: Precision@3 to measure top-result relevance, search-result CTR to capture whether users engaged with the returned results, and search conversion to determine whether improved relevance translated into downstream business impact. This ensured the model was assessed not only on retrieval quality, but on whether it actually improved the shopping experience.</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Contact ── -->
+<div class="contact-strip">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <h3>Let's build<br>something great.</h3>
+      <p>Open to Product Manager roles at companies building with AI.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:rileybaik21@gmail.com" class="contact-link primary">Email me</a>
+      <a href="https://linkedin.com/in/r-baik" class="contact-link secondary">LinkedIn</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <span class="foot-name">Riley Baik</span>
+  <span class="foot-copy">&copy; 2026</span>
+</footer>
+
+<script>
+(function(){
+  var sections = document.querySelectorAll('.detail-section[id]');
+  var navLinks = document.querySelectorAll('.sidebar-nav a');
+  var currentIdx = -1;
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var id = entry.target.id;
+        navLinks.forEach(function(link, i){
+          var isMatch = link.getAttribute('data-nav') === id;
+          var sectionIndex = Array.from(sections).indexOf(entry.target);
+          link.classList.remove('active','past');
+          var linkIdx = i;
+          if(isMatch){
+            link.classList.add('active');
+            currentIdx = sectionIndex;
+          }
+        });
+        // After setting active, mark past sections
+        navLinks.forEach(function(link, i){
+          if(!link.classList.contains('active') && i < currentIdx){
+            link.classList.add('past');
+          }
+        });
+      }
+    });
+  }, {
+    rootMargin: '-100px 0px -60% 0px',
+    threshold: 0
+  });
+
+  sections.forEach(function(section){
+    observer.observe(section);
+  });
+
+  // Set initial state
+  if(navLinks.length > 0) navLinks[0].classList.add('active');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>Redesigning Uber Eats Grocery for Item-Led Planning — Riley Baik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f2f1ee; --surface:#eae9e5; --ink:#1a1917; --ink-muted:#7a7874; --radius:14px; color-scheme:light only; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; color-scheme:light only; }
+  body { background:#f2f1ee !important; color:#1a1917 !important; font-family:'DM Sans',sans-serif; font-weight:300; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  @media (prefers-color-scheme: dark) { html, body { background:#f2f1ee !important; color:#1a1917 !important; } }
+
+  /* ── Nav ── */
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:20px 48px; background:rgba(242,241,238,0.85); backdrop-filter:blur(12px); }
+  .nav-name { font-family:'DM Serif Display',serif; font-style:italic; font-size:18px; letter-spacing:-0.02em; color:var(--ink); text-decoration:none; cursor:pointer; }
+  .nav-links { display:flex; gap:8px; align-items:center; }
+  .nav-links a { text-decoration:none; font-size:14px; font-weight:400; color:var(--ink-muted); padding:6px 16px; border-radius:99px; background:var(--surface); transition:all 0.2s; cursor:pointer; }
+  .nav-links a:hover { color:var(--ink); background:#dddbd6; }
+  .nav-links .resume-btn { background:var(--ink); color:var(--bg); }
+  .nav-links .resume-btn:hover { background:#333; color:#fff; }
+
+  /* ── Hero ── */
+  .detail-hero { padding-top:100px; min-height:480px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:64px; padding-left:48px; padding-right:48px; position:relative; overflow:hidden; }
+  .detail-hero-bg { position:absolute; inset:0; z-index:0; }
+  .detail-hero-content { position:relative; z-index:1; max-width:1200px; margin:0 auto; width:100%; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:400; color:rgba(255,255,255,0.6); cursor:pointer; margin-bottom:40px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:8px 16px; border-radius:99px; transition:all 0.2s; width:fit-content; text-decoration:none; }
+  .back-btn:hover { background:rgba(255,255,255,0.18); color:#fff; }
+  .detail-company { font-size:12px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:16px; }
+  .detail-title { font-family:'DM Serif Display',serif; font-style:italic; font-size:clamp(36px,5vw,64px); line-height:1.05; letter-spacing:-0.02em; color:#fff; margin-bottom:20px; }
+  .detail-subtitle { font-size:18px; font-weight:300; color:rgba(255,255,255,0.6); max-width:640px; line-height:1.6; margin-bottom:20px; }
+  .detail-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .detail-tag { font-size:12px; padding:5px 14px; border-radius:99px; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.1); }
+
+  /* ── Body ── */
+  .detail-body { max-width:1200px; margin:0 auto; padding:72px 48px 120px; }
+  .detail-grid { display:grid; grid-template-columns:200px 1fr; gap:48px; align-items:start; }
+  .detail-main { min-width:0; }
+
+  /* ── Sticky Sidebar Nav ── */
+  .sidebar-nav { position:sticky; top:100px; height:fit-content; max-height:calc(100vh - 120px); overflow-y:auto; padding:4px 0; display:flex; flex-direction:column; }
+  .sidebar-nav a { display:block; font-size:13px; font-weight:400; color:var(--ink-muted); text-decoration:none; padding:8px 0; line-height:1.4; opacity:0.45; transition:all 0.25s ease; border-left:2px solid transparent; padding-left:12px; }
+  .sidebar-nav a.active { color:var(--ink); font-weight:500; opacity:1; border-left-color:var(--ink); }
+  .sidebar-nav a.past { opacity:0.65; color:var(--ink-muted); }
+  .sidebar-nav a:hover { opacity:0.85; color:var(--ink); }
+
+  /* ── Sections ── */
+  .detail-section { margin-bottom:96px; scroll-margin-top:100px; }
+  .detail-section-label { display:flex; align-items:center; gap:16px; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:20px; padding-bottom:0; border-bottom:none; }
+  .detail-section-label::after { content:''; flex:1; height:1px; background:rgba(0,0,0,0.2); }
+  .detail-section p { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:16px; }
+  .detail-section p strong { font-weight:500; color:var(--ink); }
+  .detail-section h3 { font-size:19px; font-weight:600; line-height:1.3; margin:28px 0 12px; color:var(--ink); }
+
+  /* ── Lists ── */
+  .detail-section ul { margin:0 0 20px 20px; }
+  .detail-section ul.square { list-style-type:square; }
+  .detail-section li { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:8px; }
+  .detail-section li strong { font-weight:500; color:var(--ink); }
+  .detail-section ol { margin:0 0 20px 20px; }
+  .detail-section ol li { margin-bottom:10px; }
+
+  /* ── Blockquotes ── */
+  .detail-section blockquote { border-left:3px solid var(--ink); padding:4px 0 4px 20px; margin:28px 0; }
+  .detail-section blockquote p { font-family:'DM Sans',sans-serif; font-style:italic; font-size:16px; font-weight:400; color:var(--ink); margin:0; line-height:1.7; }
+
+  /* ── Tables ── */
+  .detail-section table { width:100%; border-collapse:collapse; margin:20px 0 28px; font-size:14px; }
+  .detail-section thead th { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); text-align:left; padding:12px 16px; border-bottom:2px solid rgba(0,0,0,0.1); background:var(--surface); }
+  .detail-section thead th:first-child { border-radius:var(--radius) 0 0 0; }
+  .detail-section thead th:last-child { border-radius:0 var(--radius) 0 0; }
+  .detail-section tbody td { padding:12px 16px; border-bottom:1px solid rgba(0,0,0,0.06); color:var(--ink-muted); font-weight:300; line-height:1.65; vertical-align:top; }
+  .detail-section tbody td strong { font-weight:500; color:var(--ink); }
+  .detail-section tbody tr:last-child td { border-bottom:none; }
+  .detail-section tbody tr:hover { background:rgba(0,0,0,0.015); }
+
+  /* ── Code blocks ── */
+  .detail-section pre { background:var(--surface); color:var(--ink); border-radius:var(--radius); padding:24px 28px; margin:20px 0 28px; overflow-x:auto; font-size:13px; line-height:1.8; font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace; }
+  .detail-section code { font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace; font-size:13px; }
+  .detail-section p code { background:var(--surface); padding:2px 8px; border-radius:6px; font-size:14px; color:var(--ink); }
+
+  /* ── Horizontal rule ── */
+  .section-divider { border:none; border-top:1px solid rgba(0,0,0,0.08); margin:0 0 56px; }
+
+  /* ── Contact & Footer ── */
+  .contact-strip { background:var(--ink); padding:80px 48px; }
+  .contact-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px; }
+  .contact-left h3 { font-family:'DM Serif Display',serif; font-style:italic; font-size:48px; color:var(--bg); line-height:1.1; letter-spacing:-0.02em; margin-bottom:12px; }
+  .contact-left p { font-size:15px; color:rgba(242,241,238,0.45); max-width:360px; }
+  .contact-links { display:flex; gap:12px; flex-wrap:wrap; }
+  .contact-link { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:400; padding:12px 24px; border-radius:99px; text-decoration:none; transition:all 0.2s; }
+  .contact-link.primary { background:var(--bg); color:var(--ink); }
+  .contact-link.primary:hover { background:#fff; }
+  .contact-link.secondary { background:rgba(255,255,255,0.08); color:rgba(242,241,238,0.8); border:1px solid rgba(255,255,255,0.1); }
+  .contact-link.secondary:hover { background:rgba(255,255,255,0.15); color:#fff; }
+  footer { background:var(--ink); border-top:1px solid rgba(255,255,255,0.05); padding:24px 48px; display:flex; align-items:center; justify-content:space-between; }
+  footer .foot-name { font-family:'DM Serif Display',serif; font-style:italic; color:rgba(242,241,238,0.3); font-size:14px; }
+  footer .foot-copy { font-size:12px; color:rgba(242,241,238,0.2); }
+
+  /* ── Animations ── */
+  .fade-up { opacity:0; transform:translateY(24px); animation:fadeUp 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+  .fade-up:nth-child(1){animation-delay:0.1s} .fade-up:nth-child(2){animation-delay:0.2s} .fade-up:nth-child(3){animation-delay:0.3s} .fade-up:nth-child(4){animation-delay:0.4s} .fade-up:nth-child(5){animation-delay:0.5s}
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  /* ── Responsive ── */
+  @media (max-width:900px) {
+    nav{padding:16px 24px}
+    .detail-hero{padding-left:24px;padding-right:24px}
+    .detail-body{padding:48px 24px 80px}
+    .detail-grid{grid-template-columns:1fr;gap:48px}
+    .sidebar-nav{display:none}
+    .contact-inner{flex-direction:column;align-items:flex-start}
+    .contact-strip{padding:60px 24px}
+    footer{padding:20px 24px}
+    .detail-section table { font-size:13px; }
+    .detail-section thead th, .detail-section tbody td { padding:10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a class="nav-name" href="index.html">Riley Baik</a>
+  <div class="nav-links">
+    <a href="index.html">Work</a>
+    <a href="index.html">Writing</a>
+    <a href="index.html">About</a>
+    <a class="resume-btn" href="#">Resume</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="detail-hero">
+  <div class="detail-hero-bg" style="background:linear-gradient(135deg,#1a2e1a 0%,#0a3d2a 40%,#064e3b 100%)">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 40% 60%,rgba(5,150,105,0.3) 0%,transparent 65%)"></div>
+  </div>
+  <div class="detail-hero-content">
+    <a class="back-btn fade-up" href="index.html">&larr; Back to work</a>
+    <div class="detail-company fade-up">Uber Eats &middot; Concept Case Study</div>
+    <h1 class="detail-title fade-up">Redesigning Uber Eats Grocery<br>for Item-Led Planning</h1>
+    <p class="detail-subtitle fade-up">How I would reduce basket-building friction in a store-bound delivery model using AI-assisted planning</p>
+    <div class="detail-tags fade-up">
+      <span class="detail-tag">Product Strategy</span>
+      <span class="detail-tag">AI/ML</span>
+      <span class="detail-tag">Grocery</span>
+      <span class="detail-tag">UX Design</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Body ── -->
+<div class="detail-body">
+  <div class="detail-grid">
+
+    <!-- ── Sticky Sidebar Nav ── -->
+    <aside class="sidebar-nav">
+      <a href="#section-intro" data-nav="section-intro">Introduction</a>
+      <a href="#section-1" data-nav="section-1">The Problem</a>
+      <a href="#section-2" data-nav="section-2">Business Impact</a>
+      <a href="#section-3" data-nav="section-3">Solution Design</a>
+      <a href="#section-4" data-nav="section-4">MVP Scoping Decision</a>
+      <a href="#section-6" data-nav="section-6">Success Metrics</a>
+      <a href="#section-7" data-nav="section-7">What I'd Validate Next</a>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <div class="detail-main">
+
+      <!-- Introduction -->
+      <div class="detail-section" id="section-intro">
+        <div class="detail-section-label">Introduction</div>
+        <p>As a frequent user of grocery delivery services, I noticed a recurring friction in my own shopping workflow. I then approached it as a PM: framing the problem, understanding the operational constraints, and designing a solution for Uber Eats Grocery.</p>
+        <p>Uber Eats Grocery currently requires users to select a store first, then build a basket item by item within that store's catalog. There is no efficient way to input multiple items at once, and no mechanism to identify the best-fit store based on a full intended list before committing to one.</p>
+        <p>That being said, the store-first flow exists for valid operational reasons. Uber's logistics model relies on a single driver picking up from a single location, and real-time inventory, pricing, and delivery ETA can only be pulled accurately once a store is selected.</p>
+        <p>I wouldn’t try to remove that store-bound operational model. Instead, I’d redesign the planning layer before store commitment, so users can start with what they naturally know <strong>— their intended items —</strong> while still preserving the operational model that makes reliable delivery possible.</p>
+      </div>
+
+      <!-- 1. The Problem -->
+      <div class="detail-section" id="section-1">
+        <div class="detail-section-label">The Problem</div>
+        <p>The job to be done is to help users turn their intended grocery list into a complete, accurate, purchasable cart with confidence that nothing was missed.</p>
+        <p>Uber Eats Grocery creates friction in two connected ways:</p>
+
+        <p><strong>1. Store selection happens too early</strong></h3>
+        <p>Users often begin grocery shopping with an item-based intent: they know what they need before they know where to get it. But Uber Eats Grocery requires them to begin with store selection, before they can tell which store best fits their full list.</p>
+        <p>This forces users to make an early commitment without enough information, even though their real goal is to complete a list, not choose a store.</p>
+        
+        <p><strong>2. Basket building is too manual</strong></h3>
+        <p>Once inside a store, users must reconstruct their shopping intent within that store’s catalog. Every item requires its own search, selection, and add flow, making basket creation slow and repetitive. </p>
+        <p>This input friction not only makes the experience feel inconvenient, but also directly hurts cart completion and conversion. The longer the list, the worse the experience. Users with the highest purchase intent, such as those doing a full weekly grocery run, are penalized most.</p>
+      </div>
+
+      <!-- 2. Business Impact -->
+      <div class="detail-section" id="section-2">
+        <div class="detail-section-label">Business Impact</div>
+        <p>This concept could drive business impact in two ways: </p>
+        <p><strong>1. Recover high-intent grocery sessions currently lost to input friction</strong></p>
+        <p><strong>2. Improve basket completeness and reduce missed-item regret before checkout</strong></p>
+        <p>I would expect the biggest near-term upside to come from friction reduction in large-basket sessions, with basket validation becoming more valuable as matching quality improves</p></p>
+      </div>
+
+      <!-- 3. Solution Design -->
+      <div class="detail-section" id="section-3">
+        <div class="detail-section-label">Solution Design</div>
+
+        <h3>Solution Framework</h3>
+        <pre>Step 1 — Multimodal Item Input
+       ↓
+Step 2 — AI-Powered List Understanding
+       ↓
+Step 3 — Store-Fit Recommendation
+       ↓
+Step 4 — AI-Powered Basket Validation and Completion  [Phase 2]</pre>
+
+        <h3>Step 1 — Multimodal Item Input</h3>
+        <p>Let users start where their shopping intent already exists, in text, notes, photos, or screenshots, instead of forcing them to rebuild it inside the app.</p>
+        <table>
+          <thead>
+            <tr><th>Input Type</th><th>AI Processing</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Text file / notes / paste</td><td>NLP parsing → item extraction</td></tr>
+            <tr><td>Photo (handwritten) / Screenshots </td><td>OCR + vision model → text → same pipeline</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Step 2 — AI-Powered List Understanding</h3>
+        <p>Parse and normalize raw input into structured grocery items by resolving ambiguity, standardizing quantities, and mapping to catalog-recognizable terms.</p>
+        <p>Designing for imperfect or ambiguous inputs is as important as the happy path. A user who writes "big eggs" or "Heinz" still expects the right item in their cart, so this layer needs to surface low-confidence matched items for user review rather than silently committing them.</p>
+
+        <h3>Step 3 — Store-Fit Recommendation</h3>
+        <p>Surface the <strong>best-fit store option based on four criteria</strong>, before the user commits to a store:</p>
+        <ul class="square">
+          <li><strong>Item coverage</strong> — What % of the list does this store carry?</li>
+          <li><strong>Estimated total cost</strong> — Matched item prices + delivery fee</li>
+          <li><strong>Delivery ETA</strong> — Estimated time to delivery should be within acceptable range</li>
+          <li><strong>Substitution confidence</strong> — How reliably does this partner handle unavailable items for the substitutes when exact items are out of stock?</li>
+        </ul>
+        <p>Item coverage should likely be the strongest decision factor, since users are primarily trying to complete their intended list. But coverage alone is not enough. Total cost, delivery ETA, and substitution confidence also shape whether a store is truly the best fit, and the recommendation needs to be clearly explainable to users in order to build trust. </p>
+        <p>AI matching can be imperfect. Parsed results should be surfaced in a review screen before anything is committed to cart, so that users can correct mismatches before proceeding. The core design principle is to use AI to accelerate intent completion while keeping users in control before anything is added.</p>
+        <p>Once user selects the store, any remaining gaps, such as unavailable items, are surfaced for user review.</p>
+
+
+        <h3>Step 4 — Context-Aware Completeness Check <em style="font-weight:300;color:var(--ink-muted);"></em></h3>
+        <p>After store selection and review of matched items, AI can provide one final <strong>confidence layer</strong> before checkout. In cases where the basket strongly implies a specific meal or shopping mission, the system can surface a context-aware completeness check to help users review likely missing essentials.</p>
+        <p>This is a tightly scoped <strong>completeness check</strong> designed to help users catch ingredients they likely intended to buy, not to drive discovery or basket expansion.</p>
+
+        <p><strong>Sample Messages:</strong></p>
+        <div style="background:var(--surface);border-radius:6px;padding:12px 16px;margin:12px 0;">
+          <p style="font-size:13px;color:var(--ink-muted);font-style:italic;margin:0 0 6px;">“Your cart suggests taco ingredients. Want to review likely missing essentials like lettuce or salsa?”</p>
+          <p style="font-size:13px;color:var(--ink-muted);font-style:italic;margin:0 0 6px;">"This basket looks like a pasta dinner. Want to review likely missing essentials like parmesan or garlic?"</p>
+        </div>
+        <p>Once this confidence layer is trusted, Uber Eats could later explore broader recommendation surfaces, such as meal inspiration, recipe discovery, or add-on suggestions that go beyond the user’s original intent.</p>
+
+        <!-- Full Flow Interactive Mockup -->
+        <iframe src="uber-eats-mockup-full.html"
+                width="360"
+                height="680"
+                style="border:none;display:block;margin:0 auto">
+        </iframe>
+      </div>
+
+      <!-- 4. MVP Scoping Decision -->
+      <div class="detail-section" id="section-4">
+        <div class="detail-section-label">MVP Scoping Decision</div>
+        <p>The single-store model remains in place because it is still the most operationally sound foundation for grocery delivery. Given these constraints, the product opportunity is to reduce pre-cart friction by helping users identify the best store for their intended list, rather than changing the fulfillment model entirely.</p>
+        <p>And then, the MVP should focus on making item input, list understanding, and store-fit recommendation work reliably first, then layer in a context-aware completeness check once the core flow is trusted.</p>
+        <p><strong>MVP Scoping Rationale</strong></p>
+        <table>
+          <thead>
+            <tr><th></th><th>Steps 1–3 (MVP)</th><th>Step 4 (Later Layer)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Impact type</strong></td><td>Higher cart completion with reduced friction</td><td>Higher checkout confidence through completeness support</td></tr>
+            <tr><td><strong>Timing</strong></td><td>Immediate — removes existing friction</td><td>Gradual — improves with context inference quality</td></tr>
+            <tr><td><strong>Dependency</strong></td><td>None — standalone</td><td>Requires accurate list understanding and a trusted core flow</td></tr>
+            <tr><td><strong>Risk</strong></td><td>Matching accuracy, catalog coverage</td><td>Irrelevant or low-precision completeness checks</td></tr>
+            <tr><td><strong>Why first</strong></td><td>Solves a clear, measurable friction point first</td><td>This layer only adds value once the core cart-building flow works reliably</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 6. Success Metrics -->
+      <div class="detail-section" id="section-6">
+        <div class="detail-section-label">Success Metrics</div>
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Steps 1–3 (MVP)</th><th>Step 4 (Later Layer)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Primary</strong></td><td>Grocery Cart completion rate</td><td>% orders with at least one item added via completeness check</td></tr>
+            <tr><td><strong>Secondary</strong></td><td>Time-to-cart (list upload → checkout ready)</td><td>% sessions where completeness was triggered</td></tr>
+            <tr><td><strong>Guardrail</strong></td><td>Item matching accuracy (target: &gt;85%)</td><td>False positive rate on completeness check</td></tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- 7. What I'd Validate Next -->
+      <div class="detail-section" id="section-7">
+        <div class="detail-section-label">What I'd Validate Next</div>
+        <p>Before building, I would pressure-test three assumptions with internal data:</p>
+        <ol>
+          <li><strong>Drop-off by item count:</strong> Does abandonment actually increase with list length? If the curve is flat, the friction opportunity is smaller than estimated.</li>
+          <li><strong>Partner catalog coverage:</strong> What % of typical grocery lists can a single partner fulfill? Low coverage degrades store-fit recommendation quality and may require a different UX treatment.</li>
+          <li><strong>Completeness inference accuracy:</strong> How reliably can the system infer a specific meal from basket contents? If inference is weak, the context-aware completeness check will trigger too rarely or surface irrelevant suggestions, limiting the value of Step 4.</li>
+        </ol>
+      </div>
+
+    </div>
+
+    <!-- sidebar removed — now using sticky nav sidebar on the left -->
+
+  </div>
+</div>
+
+<!-- ── Contact ── -->
+<div class="contact-strip">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <h3>Let's build<br>something great.</h3>
+      <p>Open to Product Manager roles at companies building with AI.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:rileybaik21@gmail.com" class="contact-link primary">Email me</a>
+      <a href="https://linkedin.com/in/r-baik" class="contact-link secondary">LinkedIn</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <span class="foot-name">Riley Baik</span>
+  <span class="foot-copy">&copy; 2026</span>
+</footer>
+
+<script>
+(function(){
+  var sections = document.querySelectorAll('.detail-section[id]');
+  var navLinks = document.querySelectorAll('.sidebar-nav a');
+  var currentIdx = -1;
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var id = entry.target.id;
+        navLinks.forEach(function(link, i){
+          var isMatch = link.getAttribute('data-nav') === id;
+          var sectionIndex = Array.from(sections).indexOf(entry.target);
+          link.classList.remove('active','past');
+          var linkIdx = i;
+          if(isMatch){
+            link.classList.add('active');
+            currentIdx = sectionIndex;
+          }
+        });
+        // After setting active, mark past sections
+        navLinks.forEach(function(link, i){
+          if(!link.classList.contains('active') && i < currentIdx){
+            link.classList.add('past');
+          }
+        });
+      }
+    });
+  }, {
+    rootMargin: '-100px 0px -60% 0px',
+    threshold: 0
+  });
+
+  sections.forEach(function(section){
+    observer.observe(section);
+  });
+
+  // Set initial state
+  if(navLinks.length > 0) navLinks[0].classList.add('active');
+})();
+</script>
+</body>
+</html>

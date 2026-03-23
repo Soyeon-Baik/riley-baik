@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>Designing a Real-Time AI Triage Agent for Dr. Tail — Riley Baik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f2f1ee; --surface:#eae9e5; --ink:#1a1917; --ink-muted:#7a7874; --radius:14px; color-scheme:light only; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; color-scheme:light only; }
+  body { background:#f2f1ee !important; color:#1a1917 !important; font-family:'DM Sans',sans-serif; font-weight:300; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  @media (prefers-color-scheme: dark) { html, body { background:#f2f1ee !important; color:#1a1917 !important; } }
+
+  /* ── Nav ── */
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:20px 48px; background:rgba(242,241,238,0.85); backdrop-filter:blur(12px); }
+  .nav-name { font-family:'DM Serif Display',serif; font-style:italic; font-size:18px; letter-spacing:-0.02em; color:var(--ink); text-decoration:none; cursor:pointer; }
+  .nav-links { display:flex; gap:8px; align-items:center; }
+  .nav-links a { text-decoration:none; font-size:14px; font-weight:400; color:var(--ink-muted); padding:6px 16px; border-radius:99px; background:var(--surface); transition:all 0.2s; cursor:pointer; }
+  .nav-links a:hover { color:var(--ink); background:#dddbd6; }
+  .nav-links .resume-btn { background:var(--ink); color:var(--bg); }
+  .nav-links .resume-btn:hover { background:#333; color:#fff; }
+
+  /* ── Hero ── */
+  .detail-hero { padding-top:100px; min-height:480px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:64px; padding-left:48px; padding-right:48px; position:relative; overflow:hidden; }
+  .detail-hero-bg { position:absolute; inset:0; z-index:0; }
+  .detail-hero-content { position:relative; z-index:1; max-width:1200px; margin:0 auto; width:100%; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:400; color:rgba(255,255,255,0.6); cursor:pointer; margin-bottom:40px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:8px 16px; border-radius:99px; transition:all 0.2s; width:fit-content; text-decoration:none; }
+  .back-btn:hover { background:rgba(255,255,255,0.18); color:#fff; }
+  .detail-company { font-size:12px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:16px; }
+  .detail-title { font-family:'DM Serif Display',serif; font-style:italic; font-size:clamp(36px,5vw,64px); line-height:1.05; letter-spacing:-0.02em; color:#fff; margin-bottom:20px; }
+  .detail-subtitle { font-size:18px; font-weight:300; color:rgba(255,255,255,0.6); max-width:640px; line-height:1.6; margin-bottom:20px; }
+  .detail-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .detail-tag { font-size:12px; padding:5px 14px; border-radius:99px; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.1); }
+
+  /* ── Body ── */
+  .detail-body { max-width:1200px; margin:0 auto; padding:72px 48px 120px; }
+  .detail-grid { display:grid; grid-template-columns:200px 1fr; gap:48px; align-items:start; }
+  .detail-main { min-width:0; }
+
+  /* ── Sticky Sidebar Nav ── */
+  .sidebar-nav { position:sticky; top:100px; height:fit-content; max-height:calc(100vh - 120px); overflow-y:auto; padding:4px 0; }
+  .sidebar-nav a { display:block; font-size:13px; font-weight:400; color:var(--ink-muted); text-decoration:none; padding:8px 0; line-height:1.4; opacity:0.45; transition:all 0.25s ease; border-left:2px solid transparent; padding-left:12px; }
+  .sidebar-nav a.active { color:var(--ink); font-weight:500; opacity:1; border-left-color:var(--ink); }
+  .sidebar-nav a.past { opacity:0.65; color:var(--ink-muted); }
+  .sidebar-nav a:hover { opacity:0.85; color:var(--ink); }
+
+  /* ── Sections ── */
+  .detail-section { margin-bottom:96px; scroll-margin-top:100px; }
+  .detail-section-label { display:flex; align-items:center; gap:16px; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:20px; }
+  .detail-section-label::after { content:''; flex:1; height:1px; background:rgba(0,0,0,0.2); }
+  .detail-section p { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:16px; }
+  .detail-section p strong { font-weight:500; color:var(--ink); }
+  .detail-section h3 { font-size:19px; font-weight:600; line-height:1.3; margin:28px 0 12px; color:var(--ink); }
+
+  /* ── Lists ── */
+  .detail-section ul { margin:0 0 20px 20px; }
+  .detail-section ul.square { list-style-type:square; }
+  .detail-section li { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:8px; }
+  .detail-section li strong { font-weight:500; color:var(--ink); }
+  .detail-section ol { margin:0 0 20px 20px; }
+  .detail-section ol li { margin-bottom:10px; }
+
+  /* ── Blockquotes ── */
+  .detail-section blockquote { border-left:3px solid var(--ink); padding:4px 0 4px 20px; margin:28px 0; }
+  .detail-section blockquote p { font-family:'DM Sans',sans-serif; font-style:italic; font-size:16px; font-weight:400; color:var(--ink); margin:0; line-height:1.7; }
+
+  /* ── Tables ── */
+  .detail-section table { width:100%; border-collapse:collapse; margin:20px 0 28px; font-size:14px; }
+  .detail-section thead th { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); text-align:left; padding:12px 16px; border-bottom:2px solid rgba(0,0,0,0.1); background:var(--surface); }
+  .detail-section thead th:first-child { border-radius:var(--radius) 0 0 0; }
+  .detail-section thead th:last-child { border-radius:0 var(--radius) 0 0; }
+  .detail-section tbody td { padding:12px 16px; border-bottom:1px solid rgba(0,0,0,0.06); color:var(--ink-muted); font-weight:300; line-height:1.65; vertical-align:top; }
+  .detail-section tbody td strong { font-weight:500; color:var(--ink); }
+  .detail-section tbody tr:last-child td { border-bottom:none; }
+  .detail-section tbody tr:hover { background:rgba(0,0,0,0.015); }
+
+  /* ── Code / Pre blocks ── */
+  .detail-section pre { background:var(--surface); color:var(--ink); border-radius:var(--radius); padding:24px 28px; margin:20px 0 28px; overflow-x:auto; font-size:13px; line-height:1.8; font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace; }
+  .detail-section code { font-family:'SF Mono','Fira Code','Fira Mono','Roboto Mono',monospace; font-size:13px; }
+  .detail-section p code { background:var(--surface); padding:2px 8px; border-radius:6px; font-size:14px; color:var(--ink); }
+
+  /* ── Callout boxes ── */
+  .callout { background:var(--surface); border-radius:var(--radius); padding:20px 24px; margin:20px 0 28px; }
+  .callout p { margin:0 0 8px; }
+  .callout p:last-child { margin:0; }
+  .callout-em { font-style:italic; font-size:14px; color:var(--ink-muted); }
+
+  /* ── Before/After table ── */
+  .before-after { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0 28px; }
+  .ba-card { background:var(--surface); border-radius:var(--radius); padding:20px 24px; }
+  .ba-card .ba-label { font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:12px; }
+  .ba-card p { font-size:14px; color:var(--ink-muted); line-height:1.7; margin-bottom:8px; }
+  .ba-card p:last-child { margin:0; }
+  .ba-card.after { border:1px solid rgba(0,0,0,0.08); }
+
+  /* ── Confidence UI tiers ── */
+  .confidence-tiers { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin:20px 0 28px; }
+  .ct-card { border-radius:var(--radius); padding:18px 20px; }
+  .ct-high { background:#e8f5e9; }
+  .ct-mid { background:#fff8e1; }
+  .ct-low { background:#fce4ec; }
+  .ct-badge { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:10px; }
+  .ct-dot { width:8px; height:8px; border-radius:50%; }
+  .ct-high .ct-dot { background:#388e3c; }
+  .ct-mid .ct-dot { background:#f9a825; }
+  .ct-low .ct-dot { background:#c62828; }
+  .ct-card p { font-size:13px; color:var(--ink-muted); line-height:1.65; margin:0; }
+
+  /* ── Section divider ── */
+  .section-divider { border:none; border-top:1px solid rgba(0,0,0,0.08); margin:0 0 56px; }
+
+  /* ── Contact & Footer ── */
+  .contact-strip { background:var(--ink); padding:80px 48px; }
+  .contact-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px; }
+  .contact-left h3 { font-family:'DM Serif Display',serif; font-style:italic; font-size:48px; color:var(--bg); line-height:1.1; letter-spacing:-0.02em; margin-bottom:12px; }
+  .contact-left p { font-size:15px; color:rgba(242,241,238,0.45); max-width:360px; }
+  .contact-links { display:flex; gap:12px; flex-wrap:wrap; }
+  .contact-link { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:400; padding:12px 24px; border-radius:99px; text-decoration:none; transition:all 0.2s; }
+  .contact-link.primary { background:var(--bg); color:var(--ink); }
+  .contact-link.primary:hover { background:#fff; }
+  .contact-link.secondary { background:rgba(255,255,255,0.08); color:rgba(242,241,238,0.8); border:1px solid rgba(255,255,255,0.1); }
+  .contact-link.secondary:hover { background:rgba(255,255,255,0.15); color:#fff; }
+  footer { background:var(--ink); border-top:1px solid rgba(255,255,255,0.05); padding:24px 48px; display:flex; align-items:center; justify-content:space-between; }
+  footer .foot-name { font-family:'DM Serif Display',serif; font-style:italic; color:rgba(242,241,238,0.3); font-size:14px; }
+  footer .foot-copy { font-size:12px; color:rgba(242,241,238,0.2); }
+
+  /* ── Animations ── */
+  .fade-up { opacity:0; transform:translateY(24px); animation:fadeUp 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+  .fade-up:nth-child(1){animation-delay:0.1s} .fade-up:nth-child(2){animation-delay:0.2s} .fade-up:nth-child(3){animation-delay:0.3s} .fade-up:nth-child(4){animation-delay:0.4s} .fade-up:nth-child(5){animation-delay:0.5s}
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  /* ── Responsive ── */
+  @media (max-width:900px) {
+    nav{padding:16px 24px}
+    .detail-hero{padding-left:24px;padding-right:24px}
+    .detail-body{padding:48px 24px 80px}
+    .detail-grid{grid-template-columns:1fr;gap:48px}
+    .sidebar-nav{display:none}
+    .contact-inner{flex-direction:column;align-items:flex-start}
+    .contact-strip{padding:60px 24px}
+    footer{padding:20px 24px}
+    .detail-section table{font-size:13px}
+    .detail-section thead th,.detail-section tbody td{padding:10px 12px}
+    .before-after{grid-template-columns:1fr}
+    .confidence-tiers{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a class="nav-name" href="index.html">Riley Baik</a>
+  <div class="nav-links">
+    <a href="index.html">Work</a>
+    <a href="index.html">Writing</a>
+    <a href="index.html">About</a>
+    <a class="resume-btn" href="#">Resume</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="detail-hero">
+  <div class="detail-hero-bg" style="background:linear-gradient(135deg,#0d1f2d 0%,#1a3a4a 45%,#0e4d5c 100%)">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 35% 65%,rgba(14,180,200,0.2) 0%,transparent 60%)"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(80,160,140,0.15) 0%,transparent 55%)"></div>
+  </div>
+  <div class="detail-hero-content">
+    <a class="back-btn fade-up" href="index.html">&larr; Back to work</a>
+    <div class="detail-company fade-up">Dr. Tail &middot; Case Study</div>
+    <h1 class="detail-title fade-up">Designing a Real-Time AI<br>Triage Agent for Pet Health</h1>
+    <p class="detail-subtitle fade-up">How I would replace a rule-based emergency triage with an AI agent that delivers instant, context-aware action plans — and why this can win with competitive moat</p>
+    <div class="detail-tags fade-up">
+      <span class="detail-tag">AI/ML Product Design</span>
+      <span class="detail-tag">Responsible AI</span>
+      <span class="detail-tag">Pet Health</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Body ── -->
+<div class="detail-body">
+  <div class="detail-grid">
+
+    <!-- ── Sticky Sidebar Nav ── -->
+    <aside class="sidebar-nav">
+      <a href="#section-intro" data-nav="section-intro">Introduction</a>
+      <a href="#section-1" data-nav="section-1">The Problem</a>
+      <a href="#section-2" data-nav="section-2">AI Problem Framing</a>
+      <a href="#section-3" data-nav="section-3">Architecture</a>
+      <a href="#section-4" data-nav="section-4">Trust & Guardrails</a>
+      <a href="#section-6" data-nav="section-6">Metrics</a>
+      <a href="#section-7" data-nav="section-7">Experimentation</a>
+      <a href="#section-8" data-nav="section-8">Roadmap</a>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <div class="detail-main">
+
+      <!-- Introduction -->
+      <div class="detail-section" id="section-intro">
+        <div class="detail-section-label">Introduction</div>
+        <p>Dr. Tail positions itself as a 24/7 AI vet platform, but its core triage experience still breaks at the moment users need help most. Instead of delivering immediate guidance, it relies on a rule-based questionnaire and asks users to wait for a human response.</p>
+        <p>That gap is more than a UX issue. In high-stress health situations, delay creates both user frustration and safety risk.</p>
+        <p>This case study explores how I would redesign that flow as a <strong>Real-Time AI Triage Agent</strong> — one that classifies urgency, delivers context-aware next steps, and is designed with safety, evaluation, and rollout constraints from the start.</p>
+      </div>
+
+
+      <!-- 1. The Problem -->
+      <div class="detail-section" id="section-1">
+        <div class="detail-section-label">The Problem</div>
+
+        <blockquote>
+          <p>It's 2 AM. A cat owner notices their cat vomiting repeatedly. They open Dr. Tail, answer four questions, and see: "Serious Concern (Level 7). Waiting for Dr. Tail Vet's answer..." — with no guidance on what to do while they wait.</p>
+        </blockquote>
+
+        <p>Dr. Tail's current triage flow helps identify that something may be wrong, but it stops short at the moment users need the most help. It does not translate urgency into immediate next-step guidance, and it does not interpret symptoms deeply enough in the context of the specific pet. As a result, owners are left waiting in high-stress moments without clear, personalized direction until a veterinarian reviews the case — often only to recommend an in-person visit anyway.</p>
+
+        <h4>Problem 1 - No Immediate Actionability</h4>
+        <p>The current experience identifies possible risk, but it does not help users act on it. In urgent situations, owners need immediate guidance on whether to go to the ER, seek urgent care, or monitor safely at home.</p>
+
+        <h4>Problem 2 - Limited Contextual Interpretation</h4>
+        <p>The same symptom can signal very different levels of urgency depending on the pet's age, breed, history, and co-occurring symptoms. A rule-based flow can capture obvious cases, but it struggles when severity depends on multiple signals that need to be interpreted together.</p>
+      </div>
+
+
+
+      <!-- 2. AI Problem Framing -->
+      <div class="detail-section" id="section-2">
+        <div class="detail-section-label">AI Problem Framing</div>
+
+        <p>This problem is a strong fit for AI because the product needs to do two things in sequence: interpret urgency from incomplete, context-dependent signals, then turn that assessment into clear next-step guidance. This breaks the product problem into two AI tasks: <strong>urgency classification</strong> and <strong>action protocol</strong> generation.</p>
+
+        <h4>Task 1 — Urgency Classification</h4>
+        <p>The first task is to classify the pet’s condition into one of four urgency tiers based on two inputs: the owner’s current symptom report, which may include at least one multimodal input such as text, image, or video, and the pet’s existing health profile already stored in the system, including breed, age, and medical history.</p>
+        <table>
+          <thead><tr><th>Severity</th><th>Label</th><th>Directive</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sev 4</strong></td><td>Immediate ER Visit Now</td><td>Skip full assessment; surface nearest ER via GPS</td></tr>
+            <tr><td><strong>Sev 3</strong></td><td>Urgent Care Within 2 Hours</td><td>Action protocol + clinic searching</td></tr>
+            <tr><td><strong>Sev 2</strong></td><td>Monitor &amp; Schedule Within 48 Hours</td><td>First-aid steps + follow-up reminder</td></tr>
+            <tr><td><strong>Sev 1</strong></td><td>Home Care with Observation</td><td>Self-care checklist + escalation trigger</td></tr>
+          </tbody>
+        </table>
+
+        <h4>Task 2 — Action Protocol Generation</h4>
+        <p>Once urgency is classified, the second task is to generate a context-aware action plan: a short plain-language assessment, 2–3 immediate care steps, and a recommended next action. This is best handled as a grounded generation task using veterinary guidance and the pet’s health history.</p>
+
+        <h3 style="margin-top:48px">Data Strategy</h3>
+        <p>To make these two AI tasks reliable in practice, the system needs a data strategy that supports strong supervision, broad input coverage, and continuous improvement over time. The following three sources work together to cover these needs:</p>
+        <ul class="square">
+          <li><strong>Cold-start support data:</strong> Public and synthetic examples can help expand coverage for owner-language symptom descriptions and rare scenarios.</li>
+          <li><strong>Internal clinical data:</strong> Historical cases that connect initial symptom reports to veterinarian-reviewed outcomes provide the strongest supervision signal.</li>
+          <li><strong>Ongoing feedback loop:</strong> User actions and follow-up outcomes can help improve the model over time, especially for edge cases and calibration.</li>
+        </ul>
+          <p>Labeling relies primarily on vet-reviewed clinical outcomes, where a confirmed diagnosis is linked back to the original symptom input to create a ground-truth label. For cases where outcomes are ambiguous or clinical stakes are high, expert audits add an extra validation layer before those examples are used for training.</p>
+      </div>
+
+      <!-- 3. Architecture -->
+      <div class="detail-section" id="section-3">
+        <div class="detail-section-label">Architecture</div>
+
+        <h3>Model Strategy: Fine-Tuned SLM</h3>
+        <p>For a safety-sensitive triage experience like this, a fine-tuned Small Language Model (SLM) was the better choice for three reasons.</p>
+        <h4>1. Clinical accuracy</h4>
+        <p>Fine-tuning on vet-validated EMR data creates a domain specialist. A generic LLM is broader, but more likely to produce plausible-sounding guidance that is not clinically reliable.</p>
+        <h4>2. Latency</h4>
+        <p>Emergency triage requires fast response times, with a target of P95 < 3 seconds. A lightweight SLM is more likely to meet that bar consistently in production.</p>
+        <h4>3. Data privacy</h4>
+        <p>Pet health records and symptom images contain sensitive personal data. Running inference on private cloud infrastructure without external API calls gives the product stronger control over privacy, security, and compliance.</p>
+        
+        <h3>Two-Layer Model Flow</h3>
+        <pre>User Input (text + optional photo)
+  + Pet Profile (breed, age, weight, pre-existing conditions from EMR)
+                     ↓
+  ┌──────────────────────────────────────────┐
+  │  Layer 1: Classification                 │
+  │  Multi-class urgency → Sev 1 / 2 / 3 / 4 │
+  └──────────────────────────────────────────┘
+                      ↓
+  ┌──────────────────────────────────────────┐
+  │  Layer 2: Generation (RAG)               │
+  │  Retrieves from vet knowledge base +     │
+  │  pet EMR → tailored Action Protocol      │
+  └──────────────────────────────────────────┘
+                      ↓
+  Action Protocol (&lt;3s) + Human Vet Notified Async</pre>
+<!--
+        <h3>Before vs. After</h3>
+        <div class="before-after">
+          <div class="ba-card">
+            <div class="ba-label">Before (Current Dr. Tail)</div>
+            <p>Rule-based questionnaire → Level 1–7 score</p>
+            <p>→ "Waiting for Vet's answer..."</p>
+            <p>→ Hours of delay, zero action guidance</p>
+          </div>
+          <div class="ba-card after">
+            <div class="ba-label">After (AI Triage Agent)</div>
+            <p>Symptom input (text + optional photo)</p>
+            <p>→ Instant Sev 1–4 + Action Protocol (&lt;3s)</p>
+            <p>→ Human vet notified asynchronously</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <p><strong>Example output (Sev 3):</strong></p>
+          <p class="callout-em">"Your cat is showing signs of partial urinary blockage (Sev 3: Urgent). Keep them hydrated and avoid pressure on the abdomen. The nearest urgent care is 2 miles away and open now — want me to get directions?"</p>
+        </div>
+-->
+      </div>
+
+      <!-- 4. Trust & Guardrails -->
+      <div class="detail-section" id="section-4">
+        <div class="detail-section-label">Trust & Guardrails</div>
+
+        <p>Because this product influences real health decisions for pets, trust and guardrails are core to the product. In practice, that trust has to be designed across three layers: the AI’s behavior, the mechanisms that make uncertainty and risk visible to users, and the feedback loops that help the system improve over time.</p>
+
+        <h3>Behavior Design</h3>
+        <p>Behavior was designed at the product level first, then enforced through prompts and system constraints.</p>
+        <ul class="square">
+          <li><strong>Structured output format.</strong> Every response follows a fixed structure: a one-sentence severity assessment, 2–3 immediate care steps, and a single next-step directive. This keeps outputs scannable under stress and prevents the model from drifting into open-ended explanations that delay action.</li>
+          <li><strong>No diagnosis, no dosage.</strong> The agent never provides a definitive diagnosis or medication recommendation. All outputs are framed as triage assessments, not clinical conclusions.</li>
+          <li><strong>Calm, direct tone.</strong> The agent is warm but never vague, prioritizing clarity over comfort — "here's what to do now" rather than "it might be okay."</li>
+          <li><strong>Auto-escalation rules.</strong> For known life-threatening symptom patterns such as seizures, unresponsiveness, or heavy bleeding, the agent skips full assessment and immediately outputs Sev 4 with the nearest ER via GPS.</li>
+        </ul>
+
+        <h3>Trust Mechanisms</h3>
+        <p>Trust also depends on how the system handles failure, privacy, and uncertainty at runtime.</p>
+        <ul class="square">
+          <li><strong>Top risks and mitigations.</strong> The highest-stakes risks were false negatives on life-threatening cases, data leakage from health records and photos, and over-escalation fatigue that could weaken trust over time. Each risk was paired with a clear mitigation: vet-validated training data and critical-symptom watchlists, private-cloud inference with ephemeral photo handling, and escalation accuracy monitoring tied to retraining thresholds.</li>
+          <li><strong>Confidence-aware UI.</strong> Rather than hiding uncertainty, the UI adapts to it. High confidence (≥85%) surfaces the full protocol. Moderate confidence (60–84%) adds a dotted badge and an option to provide more detail. Low confidence (&lt;60%) routes directly to a human vet without showing uncertain output to the user.</li>
+          <li><strong>Subgroup fairness checks.</strong> The model is evaluated separately across breed types and age cohorts in every evaluation cycle. Any subgroup accuracy deviation above 5% triggers targeted retraining.</li>
+        </ul>
+
+        <h3>Continuous Improvement</h3>
+        <p>Because no triage model is perfect at launch, the product was designed to learn continuously from disagreement and real-world outcomes.</p>
+        <ul class="square">
+          <li><strong>48-hour follow-up survey.</strong> A push notification asks owners how their pet is doing and whether the guidance was helpful. Responses such as "Not helpful — it was more/less serious" are flagged for veterinarian review and prioritized in the next retraining cycle.</li>
+          <li><strong>Report an Issue button.</strong> A one-tap correction below every action protocol lets users flag if the urgency felt too high or too low. This disagreement signal feeds directly into the expert audit pipeline.</li>
+          <li><strong>Expert audit and retraining loop.</strong> Flagged cases from both mechanisms are reviewed by veterinarians, re-labeled where needed, and used to retrain the model — closing the loop between real-world outcomes and model behavior.</li>
+        </ul>
+      </div>
+
+      <!-- 6. Metrics -->
+      <div class="detail-section" id="section-6">
+        <div class="detail-section-label">Metrics</div>
+
+        <p>The metric hierarchy connects model-level performance all the way through to business outcomes. Model metrics are <strong>leading indicators</strong> of business metrics — not parallel tracks.</p>
+
+        <table>
+          <thead><tr><th>Layer</th><th>Metric</th><th>Definition</th><th>Target</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Model</strong></td><td>Recall (Sev 3–4)</td><td>% of true high-urgency cases correctly flagged</td><td>≥ 95%</td></tr>
+            <tr><td></td><td>Hallucination Rate</td><td>% of action protocols with medically inaccurate guidance</td><td>&lt; 1%</td></tr>
+            <tr><td></td><td>P95 Latency</td><td>95th-percentile time from symptom input to action protocol</td><td>&lt; 3 sec</td></tr>
+            <tr><td><strong>Product</strong></td><td>Triage Completion Rate</td><td>% of users who submit symptoms and receive a full action protocol</td><td>Track uplift</td></tr>
+            <tr><td></td><td>Action Follow-Through Rate</td><td>% of users who take the recommended action (tap "Get Directions," book vet)</td><td>Track uplift</td></tr>
+            <tr><td></td><td>48-Hr Feedback Score</td><td>User-reported outcome: Helpful / Partially / Not Helpful</td><td>Track uplift</td></tr>
+            <tr><td><strong>Business</strong></td><td>Unnecessary Visit Reduction</td><td>% decrease in vet visits for Sev 1 cases that did not escalate within 48 hrs</td><td>Track ROI</td></tr>
+            <tr><td></td><td>Monthly Retention</td><td>% of users returning to triage within 30 days of first use</td><td>Track LTV</td></tr>
+            <tr><td></td><td>AI Margin per Triage</td><td>(Revenue per session) − (Inference cost per session)</td><td>Unit economics</td></tr>
+          </tbody>
+        </table>
+
+        <p><strong>Guardrail metrics that must never regress:</strong> Hallucination Rate &lt; 1%, PII leakage = 0%, system availability ≥ 99.5%. A triage tool being down at 2 AM is worse than no tool at all.</p>
+
+        <p><strong>Causal chain:</strong> High Recall (Sev 3–4) → user trust → completion rate → follow-through → fewer unnecessary visits and higher retention → revenue growth. Conversely, if hallucination rate rises, feedback score drops, follow-through declines, and retention erodes.</p>
+      </div>
+
+      <!-- 7. Experimentation -->
+      <div class="detail-section" id="section-7">
+        <div class="detail-section-label">Experimentation Plan</div>
+
+        <p>The validation strategy mirrors the offline → shadow mode → A/B approach I've applied in production search systems — the key difference here being the safety stakes: a guardrail failure in a medical context requires an automatic kill switch, not just a pause-and-review.</p>
+
+        <h3>Phase 1 — Offline Evaluation</h3>
+        <p>The fine-tuned SLM is evaluated against a Golden Set: historical cases where symptom inputs are paired with confirmed EMR diagnoses. Pass criteria: Recall (Sev 3–4) ≥ 95%, Precision ≥ 80%. The generation layer is scored by a veterinarian panel on medical accuracy (1–5 scale; target mean ≥ 4.0). This phase catches critical failures before the model touches any real user.</p>
+
+        <h3>Phase 2 — Shadow Mode</h3>
+        <p>The AI runs in production alongside the existing rule-based system, but outputs are hidden from users. Every symptom submission generates both the old score and the new AI triage. Key metric: Prediction Parity — disagreement rate between systems. Disagreement on urgency in &gt;15% of cases routes to vet review. Shadow mode also stress-tests latency under real load to validate the P95 &lt; 3s target.</p>
+        <p><strong>Duration:</strong> 4 weeks minimum, 1,000+ triage sessions.</p>
+
+        <h3>Phase 3 — A/B Test</h3>
+        <table>
+          <thead><tr><th></th><th>Control (50%)</th><th>Treatment (50%)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Experience</strong></td><td>Existing rule-based score + "Waiting for Vet"</td><td>AI urgency classification + immediate action protocol (human vet still notified async)</td></tr>
+            <tr><td><strong>Primary metric</strong></td><td colspan="2">Action Follow-Through Rate</td></tr>
+            <tr><td><strong>Secondary metrics</strong></td><td colspan="2">Completion Rate, 48-Hr Feedback, Unnecessary Visit Reduction</td></tr>
+            <tr><td><strong>Duration</strong></td><td colspan="2">≥ 3 weeks; sample sufficient to detect 10% lift at 95% confidence</td></tr>
+          </tbody>
+        </table>
+
+        <p>Because AI outputs are non-deterministic, standard A/B statistical methods apply but guardrail checks run daily. The experiment <strong>auto-pauses</strong> if: hallucination rate exceeds 1%, or any Sev 4 case is misclassified as Sev 1–2.</p>
+
+        <h3>Drift Monitoring &amp; Kill Switch</h3>
+        <p>The most realistic production threat is a new zoonotic disease outbreak — triggering both data drift (novel symptom descriptions) and concept drift (previously Sev 2 symptoms now requiring Sev 3 urgency). Three automated signals form an early-warning system: input distribution monitoring (embedding stability index), Escalation Accuracy Rate on a rolling 30-day window, and a spike in "Not Helpful" feedback responses (&gt;15% weekly, up from ~5% baseline).</p>
+        <p>The AI Triage Agent <strong>automatically reverts to the rule-based baseline</strong> if: Recall (Sev 3–4) drops below 90% on a rolling 7-day window, hallucination rate exceeds 2%, or two or more confirmed Sev 4 misclassifications occur within any 7-day period. Affected users receive a push notification to consult a vet; the engineering team runs root-cause analysis before redeployment.</p>
+      </div>
+
+      <!-- 8. Why This Can Win -->
+      <div class="detail-section" id="section-8">
+        <div class="detail-section-label">Why This Can Win</div>
+        <p>Dr. Tail’s EMR integration creates a closed-loop learning system that becomes stronger over time. Each triage recommendation can eventually be compared against veterinarian-confirmed outcomes from connected clinics, creating a growing source of labeled ground truth for model improvement.</p>
+        <p>Over time, the platform also becomes more valuable to pet owners as it accumulates each pet’s longitudinal health history. That history improves personalization, while also raising switching costs: moving to another product would mean losing years of medical context. Together, these dynamics create a defensible advantage built on proprietary data and feedback loops, not just surface-level features.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Contact ── -->
+<div class="contact-strip">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <h3>Let's build<br>something great.</h3>
+      <p>Open to Product Manager roles at companies building with AI.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:riley@example.com" class="contact-link primary">Email me</a>
+      <a href="https://linkedin.com/in/r-baik" class="contact-link secondary">LinkedIn</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <span class="foot-name">Riley Baik</span>
+  <span class="foot-copy">&copy; 2026</span>
+</footer>
+
+<script>
+(function(){
+  var sections = document.querySelectorAll('.detail-section[id]');
+  var navLinks = document.querySelectorAll('.sidebar-nav a');
+  var currentIdx = -1;
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var id = entry.target.id;
+        var sectionIndex = Array.from(sections).indexOf(entry.target);
+        navLinks.forEach(function(link, i){
+          var isMatch = link.getAttribute('data-nav') === id;
+          link.classList.remove('active','past');
+          if(isMatch){ link.classList.add('active'); currentIdx = sectionIndex; }
+        });
+        navLinks.forEach(function(link, i){
+          if(!link.classList.contains('active') && i < currentIdx){
+            link.classList.add('past');
+          }
+        });
+      }
+    });
+  },{
+    rootMargin: '-100px 0px -60% 0px',
+    threshold: 0
+  });
+
+  sections.forEach(function(section){ observer.observe(section); });
+})();
+</script>
+</body>
+</html>

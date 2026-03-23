@@ -1,0 +1,196 @@
+<!-- Step 3 & Step 4 — Store-Fit + Basket Validation Interactive Mockup -->
+<style>
+.ue2-phone{background:#fff;border-radius:40px;border:8px solid #1a1a1a;width:280px;height:580px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;flex-direction:column}
+.ue2-status{background:#000;padding:10px 20px 6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ue2-status span{color:#fff;font-size:11px;font-weight:500}
+.ue2-header{background:#000;padding:12px 16px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.ue2-back{width:28px;height:28px;border-radius:50%;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.ue2-scrollarea{background:#f5f5f5;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ue2-scrollarea::-webkit-scrollbar{width:3px}
+.ue2-scrollarea::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+.ue2-panel{display:none;flex-direction:column;height:100%}
+.ue2-panel.active{display:flex}
+.ue2-dot{width:7px;height:7px;border-radius:50%;background:#ddd;cursor:pointer;transition:background .2s}
+.ue2-dot.active{background:#000}
+.ue2-card{background:#fff;border-radius:12px;margin:10px 12px;padding:14px}
+.ue2-card-best{background:#fff;border-radius:12px;margin:10px 12px;padding:14px;border:2px solid #06C167}
+.ue2-badge-best{background:#06C167;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.ue2-badge-green{background:#06C167;color:#fff;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.ue2-badge-yellow{background:#FFC400;color:#000;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px}
+.ue2-badge-red{background:#e53935;color:#fff;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.ue2-crit{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px}
+.ue2-crit-label{font-size:9px;color:#888;margin-bottom:2px;text-align:center}
+.ue2-crit-val{font-size:12px;font-weight:600;color:#000;text-align:center}
+.ue2-crit-val.green{color:#06C167}
+.ue2-crit-val.yellow{color:#FFC400}
+.ue2-nav-btn{padding:6px 16px;border:1px solid #e0e0e0;border-radius:20px;background:#fff;font-size:12px;cursor:pointer;color:#333}
+</style>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 0">
+
+  <div style="display:flex;gap:6px" id="ue2-dots">
+    <div class="ue2-dot active" onclick="ue2GoTo(0)"></div>
+    <div class="ue2-dot" onclick="ue2GoTo(1)"></div>
+  </div>
+
+  <div class="ue2-phone">
+    <div class="ue2-status">
+      <span>9:41</span><span>●●●</span>
+    </div>
+
+    <!-- Step 3: Store-Fit Recommendation -->
+    <div id="ue2-s0" class="ue2-panel active">
+      <div class="ue2-header">
+        <div class="ue2-back">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="color:#fff;font-size:15px;font-weight:600">Best store for your list</div>
+      </div>
+      <div class="ue2-scrollarea">
+        <div style="padding:10px 12px 4px;font-size:11px;color:#888">Based on your 10-item list</div>
+
+        <div class="ue2-card-best">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:36px;height:36px;border-radius:8px;background:#e8132b;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">FM</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:#000">Fred Meyer</div>
+                <div style="font-size:11px;color:#888">0.8 mi away</div>
+              </div>
+            </div>
+            <span class="ue2-badge-best">best match</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:18px;font-weight:700;color:#000">$47.20</span>
+            <span style="font-size:11px;color:#888">incl. $3.99 delivery</span>
+          </div>
+          <div class="ue2-crit">
+            <div><div class="ue2-crit-label">Coverage</div><div class="ue2-crit-val green">10/10</div></div>
+            <div><div class="ue2-crit-label">Cost</div><div class="ue2-crit-val">$$</div></div>
+            <div><div class="ue2-crit-label">ETA</div><div class="ue2-crit-val">50 min</div></div>
+            <div><div class="ue2-crit-label">Sub. conf.</div><div class="ue2-crit-val green">High</div></div>
+          </div>
+          <button onclick="ue2GoTo(1)" style="width:100%;margin-top:12px;padding:11px;background:#000;border-radius:10px;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Select Fred Meyer →</button>
+        </div>
+
+        <div class="ue2-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:36px;height:36px;border-radius:8px;background:#c8102e;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">SW</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:#000">Safeway</div>
+                <div style="font-size:11px;color:#888">1.2 mi away</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:18px;font-weight:700;color:#000">$44.10</span>
+            <span style="font-size:11px;color:#888">incl. $3.99 delivery</span>
+          </div>
+          <div class="ue2-crit">
+            <div><div class="ue2-crit-label">Coverage</div><div class="ue2-crit-val yellow">8/10</div></div>
+            <div><div class="ue2-crit-label">Cost</div><div class="ue2-crit-val">$</div></div>
+            <div><div class="ue2-crit-label">ETA</div><div class="ue2-crit-val">42 min</div></div>
+            <div><div class="ue2-crit-label">Sub. conf.</div><div class="ue2-crit-val yellow">Med</div></div>
+          </div>
+          <div style="margin-top:10px;padding:8px 10px;background:#fff8e1;border-radius:8px;font-size:11px;color:#888">2 items unavailable: sandwich bread, Greek yogurt</div>
+          <button onclick="ue2GoTo(1)" style="width:100%;margin-top:10px;padding:11px;background:#f5f5f5;border-radius:10px;border:none;color:#333;font-size:12px;font-weight:500;cursor:pointer">Select Safeway</button>
+        </div>
+
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+    <!-- Step 4: Basket Validation -->
+    <div id="ue2-s1" class="ue2-panel">
+      <div class="ue2-header">
+        <div class="ue2-back" onclick="ue2GoTo(0)">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="color:#fff;font-size:15px;font-weight:600">Review before checkout</div>
+      </div>
+      <div class="ue2-scrollarea">
+        <div style="padding:10px 12px 6px;background:#fff;border-bottom:0.5px solid #e8e8e8">
+          <div style="font-size:12px;font-weight:600;color:#000">Fred Meyer · 10 items · $47.20</div>
+        </div>
+
+        <div style="background:#fff;margin:10px 12px;border-radius:12px;overflow:hidden">
+          <div style="padding:10px 14px;border-bottom:0.5px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:13px">Whole milk (1 gal)</div><div style="font-size:11px;color:#888">$5.49</div></div>
+            <span class="ue2-badge-green">added</span>
+          </div>
+          <div style="padding:10px 14px;border-bottom:0.5px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:13px">Sourdough bread</div><div style="font-size:11px;color:#888">$6.99</div></div>
+            <span class="ue2-badge-green">added</span>
+          </div>
+          <div style="padding:10px 14px;border-bottom:0.5px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:13px">Ground beef (1 lb)</div><div style="font-size:11px;color:#888">$8.99</div></div>
+            <span class="ue2-badge-green">added</span>
+          </div>
+          <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;color:#888">+ 7 more items</span>
+            <span style="font-size:12px;color:#888">$25.73</span>
+          </div>
+        </div>
+
+        <div style="margin:0 12px 10px;padding:14px;background:#fff;border-radius:12px;border:1.5px solid #FFC400">
+          <div style="font-size:12px;font-weight:600;color:#000;margin-bottom:10px">Before you check out</div>
+
+          <div style="padding:10px 12px;background:#f9f9f9;border-radius:10px;margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+              <div>
+                <div style="font-size:13px;font-weight:500;color:#000">Yogurt</div>
+                <div style="font-size:11px;color:#e53935;margin-top:1px">Unavailable at Fred Meyer today</div>
+              </div>
+              <span class="ue2-badge-red">unavailable</span>
+            </div>
+            <div style="font-size:12px;color:#555;margin:6px 0 8px">Want to skip or find an alternative?</div>
+            <div style="display:flex;gap:6px">
+              <button style="flex:1;padding:7px;background:#000;border:none;border-radius:8px;color:#fff;font-size:11px;font-weight:600;cursor:pointer">Find alternative</button>
+              <button style="flex:1;padding:7px;background:#f0f0f0;border:none;border-radius:8px;color:#555;font-size:11px;cursor:pointer">Skip</button>
+            </div>
+          </div>
+
+          <div style="padding:10px 12px;background:#f9f9f9;border-radius:10px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+              <div>
+                <div style="font-size:13px;font-weight:500;color:#000">Parmesan</div>
+                <div style="font-size:11px;color:#FFC400;margin-top:1px">Possible gap in your list</div>
+              </div>
+              <span class="ue2-badge-yellow">review</span>
+            </div>
+            <div style="font-size:12px;color:#555;margin:6px 0 8px">Your cart looks like a pasta dish — was parmesan on your list?</div>
+            <div style="display:flex;gap:6px">
+              <button style="flex:1;padding:7px;background:#000;border:none;border-radius:8px;color:#fff;font-size:11px;font-weight:600;cursor:pointer">Add to cart</button>
+              <button style="flex:1;padding:7px;background:#f0f0f0;border:none;border-radius:8px;color:#555;font-size:11px;cursor:pointer">No thanks</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:0 12px 20px">
+          <button style="width:100%;padding:13px;background:#06C167;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer">Go to checkout →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex;gap:8px">
+    <button class="ue2-nav-btn" onclick="ue2GoTo(Math.max(0,ue2Cur-1))">← Back</button>
+    <button class="ue2-nav-btn" onclick="ue2GoTo(Math.min(1,ue2Cur+1))">Next →</button>
+  </div>
+
+</div>
+
+<script>
+var ue2Cur=0;
+function ue2GoTo(n){
+  ue2Cur=n;
+  [0,1].forEach(function(i){
+    document.getElementById('ue2-s'+i).classList.toggle('active',i===n);
+    document.querySelectorAll('.ue2-dot')[i].classList.toggle('active',i===n);
+  });
+  var areas=document.querySelectorAll('.ue2-scrollarea');
+  if(areas[n]) areas[n].scrollTop=0;
+}
+</script>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riley Baik — Product Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f2f1ee; --surface:#eae9e5; --ink:#1a1917; --ink-muted:#7a7874; --radius:14px; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--ink); font-family:'DM Sans',sans-serif; font-weight:300; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:20px 48px; background:rgba(242,241,238,0.85); backdrop-filter:blur(12px); }
+  .nav-name { font-family:'DM Serif Display',serif; font-style:italic; font-size:18px; letter-spacing:-0.02em; color:var(--ink); text-decoration:none; cursor:pointer; }
+  .nav-links { display:flex; gap:8px; align-items:center; }
+  .nav-links a { text-decoration:none; font-size:14px; font-weight:400; color:var(--ink-muted); padding:6px 16px; border-radius:99px; background:var(--surface); transition:all 0.2s; cursor:pointer; }
+  .nav-links a:hover { color:var(--ink); background:#dddbd6; }
+  .nav-links .resume-btn { background:var(--ink); color:var(--bg); }
+  .nav-links .resume-btn:hover { background:#333; color:#fff; }
+
+  .page { display:none; }
+  .page.active { display:block; }
+  .page-enter { animation:pageIn 0.45s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+  @keyframes pageIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .hero { padding:160px 48px 100px; max-width:1200px; margin:0 auto; }
+  .hero-tag { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:400; color:var(--ink-muted); margin-bottom:32px; letter-spacing:0.04em; }
+  .hero-tag::before { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:#4ade80; box-shadow:0 0 0 3px rgba(74,222,128,0.2); animation:pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,0.2);} 50%{box-shadow:0 0 0 6px rgba(74,222,128,0.1);} }
+  .hero h1 { font-family:'DM Serif Display',serif; font-style:italic; font-size:clamp(52px,7vw,88px); line-height:1.0; letter-spacing:-0.03em; margin-bottom:24px; }
+  .hero-sub { font-size:18px; font-weight:300; color:var(--ink-muted); max-width:560px; line-height:1.6; margin-bottom:12px; }
+  .hero-prev { font-size:14px; color:var(--ink-muted); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .hero-prev span { font-weight:500; color:var(--ink); }
+  .hero-prev .dot { opacity:0.3; }
+
+  .section { max-width:1200px; margin:0 auto; padding:0 48px 120px; }
+  .section-label { font-size:12px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:48px; display:flex; align-items:center; gap:16px; }
+  .section-label::after { content:''; flex:1; height:1px; background:currentColor; opacity:0.2; }
+
+  .projects { display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
+  .project-card { display:flex; flex-direction:column; background:var(--surface); border-radius:12px; overflow:hidden; cursor:pointer; color:inherit; transition:transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .project-card:hover { transform:translateY(-3px); }
+  .project-thumb { height:240px; overflow:hidden; position:relative; }
+  .project-info { padding:24px; display:flex; flex-direction:column; justify-content:space-between; flex:1; }
+  .project-meta { display:flex; flex-direction:column; gap:10px; }
+  .project-company { font-size:12px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); display:flex; align-items:center; gap:8px; }
+  .project-company::before { content:''; display:inline-block; width:20px; height:1px; background:var(--ink-muted); opacity:0.4; }
+  .project-title { font-family:'DM Serif Display',serif; font-size:24px; line-height:1.2; letter-spacing:-0.02em; }
+  .project-desc { font-size:14px; font-weight:300; color:var(--ink-muted); line-height:1.6; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .project-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .project-tag { font-size:11px; padding:3px 10px; border-radius:99px; background:var(--bg); color:var(--ink-muted); border:1px solid rgba(0,0,0,0.08); }
+  .project-footer { display:flex; align-items:center; justify-content:flex-end; margin-top:16px; }
+  .project-arrow { width:36px; height:36px; border-radius:50%; background:var(--ink); color:var(--bg); display:flex; align-items:center; justify-content:center; font-size:16px; transition:transform 0.2s; flex-shrink:0; }
+  .project-card:hover .project-arrow { transform:rotate(45deg); }
+
+  .thumb-inner { width:100%; height:100%; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:32px; gap:8px; position:relative; z-index:1; }
+  .mock-tags { display:flex; gap:6px; flex-wrap:wrap; }
+  .mock-tag { font-size:11px; padding:4px 10px; border-radius:99px; background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); border:1px solid rgba(255,255,255,0.08); }
+  .mock-tag.active { background:rgba(45,91,227,0.5); color:#a8c0ff; border-color:rgba(45,91,227,0.4); }
+  .mock-search-bar { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:8px; width:100%; padding:12px 16px; display:flex; align-items:center; gap:10px; }
+  .mock-search-icon { width:16px; height:16px; border:1.5px solid rgba(255,255,255,0.4); border-radius:50%; position:relative; flex-shrink:0; }
+  .mock-search-icon::after { content:''; position:absolute; bottom:-3px; right:-3px; width:5px; height:1.5px; background:rgba(255,255,255,0.4); transform:rotate(45deg); }
+  .mock-search-text { font-size:13px; color:rgba(255,255,255,0.5); }
+  .mock-results { display:flex; flex-direction:column; gap:6px; width:100%; }
+  .mock-result-item { background:rgba(255,255,255,0.05); border-radius:6px; padding:10px 14px; display:flex; align-items:center; gap:10px; }
+  .mock-result-dot { width:28px; height:28px; border-radius:6px; flex-shrink:0; }
+  .mock-result-lines { flex:1; display:flex; flex-direction:column; gap:5px; }
+  .mock-line { height:8px; border-radius:4px; background:rgba(255,255,255,0.15); }
+  .mock-metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; }
+  .mock-metric { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.07); border-radius:8px; padding:12px; }
+  .mock-metric-value { font-size:22px; font-weight:600; color:#4ade80; font-family:'DM Serif Display',serif; }
+  .mock-metric-label { font-size:10px; color:rgba(255,255,255,0.4); margin-top:2px; }
+  .mock-chart { width:100%; height:40px; background:rgba(255,255,255,0.03); border-radius:6px; overflow:hidden; position:relative; }
+  .mock-chart-line { position:absolute; bottom:8px; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#4ade80 30%,#22c55e 70%,transparent); opacity:0.6; }
+
+  .about-strip { max-width:1200px; margin:0 auto; padding:0 48px 120px; }
+  .about-grid { display:grid; grid-template-columns:340px 1fr; gap:64px; align-items:start; }
+  .about-photo { width:100%; aspect-ratio:1/1; border-radius:50%; overflow:hidden; background:var(--surface); }
+  .photo-placeholder { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:linear-gradient(160deg,#e8e6e1 0%,#d4d1cb 100%); }
+  .photo-placeholder-icon { width:72px; height:72px; border-radius:50%; background:rgba(0,0,0,0.08); display:flex; align-items:center; justify-content:center; }
+  .photo-placeholder-icon svg { width:36px; height:36px; opacity:0.35; }
+  .photo-placeholder-text { font-size:12px; color:rgba(0,0,0,0.3); letter-spacing:0.06em; }
+  .about-content { padding-top:8px; }
+  .about-content h2 { font-family:'DM Serif Display',serif; font-style:italic; font-size:42px; line-height:1.1; letter-spacing:-0.02em; margin-bottom:24px; }
+  .about-content p { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.75; margin-bottom:16px; max-width:480px; }
+  .about-stats { display:flex; gap:40px; margin:40px 0; padding:32px 0; border-top:1px solid rgba(0,0,0,0.08); border-bottom:1px solid rgba(0,0,0,0.08); }
+  .about-stat strong { font-family:'DM Serif Display',serif; font-size:36px; font-style:italic; display:block; line-height:1; margin-bottom:4px; }
+  .about-stat span { font-size:13px; color:var(--ink-muted); }
+  .skill-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
+  .skill-chip { font-size:13px; padding:6px 14px; border-radius:99px; background:var(--surface); color:var(--ink-muted); border:1px solid rgba(0,0,0,0.06); }
+
+  .contact-strip { background:var(--ink); padding:80px 48px; }
+  .contact-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:40px; }
+  .contact-left h3 { font-family:'DM Serif Display',serif; font-style:italic; font-size:48px; color:var(--bg); line-height:1.1; letter-spacing:-0.02em; margin-bottom:12px; }
+  .contact-left p { font-size:15px; color:rgba(242,241,238,0.45); max-width:360px; }
+  .contact-links { display:flex; gap:12px; flex-wrap:wrap; }
+  .contact-link { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:400; padding:12px 24px; border-radius:99px; text-decoration:none; transition:all 0.2s; }
+  .contact-link.primary { background:var(--bg); color:var(--ink); }
+  .contact-link.primary:hover { background:#fff; }
+  .contact-link.secondary { background:rgba(255,255,255,0.08); color:rgba(242,241,238,0.8); border:1px solid rgba(255,255,255,0.1); }
+  .contact-link.secondary:hover { background:rgba(255,255,255,0.15); color:#fff; }
+  footer { background:var(--ink); border-top:1px solid rgba(255,255,255,0.05); padding:24px 48px; display:flex; align-items:center; justify-content:space-between; }
+  footer .foot-name { font-family:'DM Serif Display',serif; font-style:italic; color:rgba(242,241,238,0.3); font-size:14px; }
+  footer .foot-copy { font-size:12px; color:rgba(242,241,238,0.2); }
+
+  .detail-hero { padding-top:100px; min-height:480px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:64px; padding-left:48px; padding-right:48px; position:relative; overflow:hidden; }
+  .detail-hero-bg { position:absolute; inset:0; z-index:0; }
+  .detail-hero-content { position:relative; z-index:1; max-width:1200px; margin:0 auto; width:100%; }
+  .back-btn { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:400; color:rgba(255,255,255,0.6); cursor:pointer; margin-bottom:40px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); padding:8px 16px; border-radius:99px; transition:all 0.2s; width:fit-content; }
+  .back-btn:hover { background:rgba(255,255,255,0.18); color:#fff; }
+  .detail-company { font-size:12px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:16px; }
+  .detail-title { font-family:'DM Serif Display',serif; font-style:italic; font-size:clamp(36px,5vw,64px); line-height:1.05; letter-spacing:-0.02em; color:#fff; margin-bottom:20px; }
+  .detail-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .detail-tag { font-size:12px; padding:5px 14px; border-radius:99px; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.8); border:1px solid rgba(255,255,255,0.1); }
+  .detail-body { max-width:1200px; margin:0 auto; padding:72px 48px 120px; }
+  .detail-grid { display:grid; grid-template-columns:2fr 1fr; gap:80px; align-items:start; }
+  .detail-section { margin-bottom:56px; }
+  .detail-section-label { font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid rgba(0,0,0,0.08); }
+  .detail-section p { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.8; margin-bottom:16px; }
+  .stat-card { background:var(--surface); border-radius:var(--radius); padding:28px; margin-bottom:12px; }
+  .stat-card-value { font-family:'DM Serif Display',serif; font-style:italic; font-size:40px; line-height:1; color:var(--ink); margin-bottom:6px; }
+  .stat-card-label { font-size:13px; color:var(--ink-muted); }
+  .timeline { display:flex; flex-direction:column; }
+  .timeline-item { display:flex; gap:20px; }
+  .timeline-left { display:flex; flex-direction:column; align-items:center; }
+  .timeline-dot { width:10px; height:10px; border-radius:50%; background:var(--ink); flex-shrink:0; margin-top:5px; }
+  .timeline-line { width:1px; flex:1; background:rgba(0,0,0,0.1); margin:6px 0; min-height:24px; }
+  .timeline-item:last-child .timeline-line { display:none; }
+  .timeline-content { padding-bottom:28px; }
+  .timeline-phase { font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted); margin-bottom:4px; }
+  .timeline-text { font-size:14px; color:var(--ink); line-height:1.6; }
+
+  .writing-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:2px; }
+  .writing-card { background:var(--surface); border-radius:var(--radius); padding:36px; cursor:pointer; transition:transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94); display:flex; flex-direction:column; gap:16px; }
+  .writing-card:hover { transform:translateY(-3px); }
+  .writing-topic { font-size:11px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-muted); }
+  .writing-title { font-family:'DM Serif Display',serif; font-size:24px; line-height:1.2; letter-spacing:-0.02em; }
+  .writing-excerpt { font-size:14px; font-weight:300; color:var(--ink-muted); line-height:1.7; flex:1; }
+  .writing-footer { display:flex; align-items:center; justify-content:space-between; padding-top:16px; border-top:1px solid rgba(0,0,0,0.07); }
+  .writing-date { font-size:12px; color:var(--ink-muted); }
+  .writing-arrow { font-size:16px; color:var(--ink-muted); transition:transform 0.2s; }
+  .writing-card:hover .writing-arrow { transform:translateX(4px); }
+
+  .writing-detail { max-width:720px; margin:0 auto; padding:72px 48px 120px; }
+  .writing-detail h1 { font-family:'DM Serif Display',serif; font-style:italic; font-size:clamp(32px,4vw,52px); line-height:1.1; letter-spacing:-0.02em; margin-bottom:12px; }
+  .writing-detail-meta { font-size:13px; color:var(--ink-muted); margin-bottom:48px; display:flex; gap:16px; align-items:center; }
+  .writing-detail-meta span { display:flex; align-items:center; gap:6px; }
+  .writing-body h2 { font-family:'DM Serif Display',serif; font-size:24px; line-height:1.2; margin:40px 0 16px; letter-spacing:-0.02em; }
+  .writing-body p { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.85; margin-bottom:20px; }
+  .writing-body ul { margin:0 0 20px 20px; }
+  .writing-body li { font-size:16px; font-weight:300; color:var(--ink-muted); line-height:1.85; margin-bottom:8px; }
+  .writing-body blockquote { border-left:3px solid var(--ink); padding:4px 0 4px 20px; margin:28px 0; }
+  .writing-body blockquote p { font-family:'DM Serif Display',serif; font-style:italic; font-size:20px; color:var(--ink); margin:0; line-height:1.5; }
+
+  .fade-up { opacity:0; transform:translateY(24px); animation:fadeUp 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+  .fade-up:nth-child(1){animation-delay:0.1s} .fade-up:nth-child(2){animation-delay:0.2s} .fade-up:nth-child(3){animation-delay:0.3s} .fade-up:nth-child(4){animation-delay:0.4s}
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  @media (max-width:900px) {
+    nav{padding:16px 24px} .hero{padding:120px 24px 80px} .section,.about-strip{padding:0 24px 80px}
+    .projects{grid-template-columns:1fr} .project-thumb{height:220px} .about-grid{grid-template-columns:1fr}
+    .contact-inner{flex-direction:column;align-items:flex-start} .contact-strip{padding:60px 24px}
+    footer{padding:20px 24px} .about-stats{gap:24px}
+    .detail-hero{padding-left:24px;padding-right:24px} .detail-body{padding:48px 24px 80px} .detail-grid{grid-template-columns:1fr;gap:48px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name" onclick="showPage('home')">Riley Baik</span>
+  <div class="nav-links">
+    <a onclick="showPage('home'); scrollToSection('#work')">Work</a>
+    <a onclick="showPage('home'); scrollToSection('#writing')">Writing</a>
+    <a onclick="showPage('home'); scrollToSection('#about')">About</a>
+
+    <a class="resume-btn" href="#">Resume</a>
+  </div>
+</nav>
+
+<div id="page-home" class="page active"></div>
+<div id="page-detail" class="page"></div>
+<div id="page-writing" class="page"></div>
+
+<script>
+/* =====================================================
+   ✏️  PROJECTS DATA
+   새 프로젝트 추가 = 이 배열에 객체 하나 추가하면 끝!
+   ===================================================== */
+const PROJECTS = [
+  {
+    id: 'uber-eats-grocery',
+    company: 'Case Study',
+    period: 'Concept Case Study',
+    title: 'Redesigning Uber Eats\nGrocery for Item-Led Planning',
+    titleCard: 'Redesigning Grocery Ordering on Uber Eats',
+    description: 'A concept case study exploring how AI-assisted planning could reduce basket-building friction in a store-bound delivery model.',
+    tags: ['AI Product', 'Product Strategy', 'UX'],
+    impact: { value: 'Concept', label: 'Case Study' },
+    thumb: 'grocery',
+    externalUrl: 'uber-eats-grocery.html',
+    heroGradient: 'linear-gradient(135deg,#1a2e1a 0%,#0a3d2a 40%,#064e3b 100%)',
+    heroGlow: 'radial-gradient(ellipse at 40% 60%,rgba(5,150,105,0.3) 0%,transparent 65%)',
+    detail: {}
+  },
+  {
+    id: 'samsung',
+    company: 'Samsung · 2025',
+    period: '2022 – 2024',
+    title: 'Hybrid AI-Search\nat Samsung.com',
+    titleCard: 'Hybrid AI-Search at Samsung.com',
+    description: 'Improving on-site search relevance by selectively augmenting lexical retrieval with semantic understanding.',
+    tags: ['AI/ML', 'Search', 'E-commerce'],
+    impact: { value: '$12M+', label: 'Revenue impact attributed' },
+    thumb: 'samsung',
+    externalUrl: 'samsung-search.html',
+    heroGradient: 'linear-gradient(135deg,#0d1f0d 0%,#0a2e1a 50%,#1a3d2b 100%)',
+    heroGlow: 'radial-gradient(ellipse at 70% 40%,rgba(34,197,94,0.25) 0%,transparent 65%)',
+    detail: {
+      problem: [
+        "Samsung's direct-to-consumer e-commerce platform was underperforming against third-party channels. Conversion rates were 2× lower than industry benchmarks, and the team lacked a consistent framework for measuring and attributing product impact.",
+        "The underlying issue wasn't the products — it was the lack of a data-driven decision-making culture and an experimentation infrastructure that teams could actually use."
+      ],
+      approach: [
+        "I built a metrics framework from scratch, defining a three-tier hierarchy: business metrics (revenue, margin), product metrics (conversion, retention, NPS), and leading indicators (PDP engagement, add-to-cart rate).",
+        "Alongside the framework, I established an experimentation program — standardizing how we design, run, and interpret A/B tests — and introduced a conversion optimization loop that prioritized high-surface-area changes with rapid weekly iterations."
+      ],
+      process: [
+        { phase: 'Audit', text: 'Ran a full funnel analysis across 8 market regions, identifying the biggest drop-off points and inconsistencies in tracking instrumentation.' },
+        { phase: 'Framework Build', text: 'Developed the metrics hierarchy and gained alignment from 6 regional PMs and the VP of E-commerce within 6 weeks.' },
+        { phase: 'Experimentation Sprints', text: 'Ran 24 experiments over 12 months across checkout, PDP, and onboarding flows, with a 63% win rate on primary metrics.' },
+        { phase: 'Scale', text: 'Winning experiments were adapted across 5 regional storefronts, compounding initial gains through localization.' }
+      ],
+      outcome: [
+        "Over 18 months, the program drove $12M+ in attributable revenue through conversion gains, with a 4.2× lift in conversion rate on optimized PDPs and a 23-point NPS improvement. The metrics framework was adopted org-wide."
+      ],
+      stats: [
+        { value: '$12M+', label: 'Attributable revenue impact' },
+        { value: '4.2×',  label: 'Conversion lift on optimized PDPs' },
+        { value: '↑23',   label: 'NPS points gained' }
+      ],
+      role: 'Lead PM — defined strategy, built experimentation program, and drove alignment across 6 regional teams.'
+    }
+  }
+  /* ✏️ 새 프로젝트는 여기에 객체를 추가하세요 */,
+  {
+    id: 'drtail',
+    company: 'Case Study',
+    period: 'Concept Case Study',
+    title: 'Real-Time AI Triage Agent\nfor Pet Health',
+    titleCard: 'Real-Time AI Triage Agent for Pet Health',
+    description: 'Designed an AI-powered triage system for a pet healthcare app — combining classification, RAG, and responsible AI guardrails to route pet health queries with confidence.',
+    tags: ['AI Product', 'Product Design', 'Responsible AI'],
+    impact: { value: 'Concept', label: 'Case Study' },
+    thumb: 'drtail',
+    externalUrl: 'dr-tail-triage-agent (1).html',
+    heroGradient: 'linear-gradient(135deg,#1a1a2e 0%,#2e1a3d 100%)',
+    heroGlow: 'radial-gradient(ellipse at 50% 50%,rgba(139,92,246,0.25) 0%,transparent 65%)',
+    detail: {}
+  },
+  {
+    id: 'docmerger',
+    company: 'Personal Project',
+    period: '2026',
+    title: 'DocMerger\nAI Document Tool',
+    titleCard: 'AI Document Merger for Version',
+    description: 'Built an AI-powered tool that consolidates multiple interview prep documents by identifying common themes and selecting the most recent version of each. Designed the product end-to-end: problem framing, UX, and AI integration using Claude API.',
+    tags: ['Gen AI','LLM', 'RAG', 'AI Evals'],
+    impact: { value: '<30s', label: 'End-to-end merge time' },
+    thumb: 'docmerger',
+    heroGradient: 'linear-gradient(135deg,#1a0f2e 0%,#2d1b4e 50%,#1e1035 100%)',
+    heroGlow: 'radial-gradient(ellipse at 60% 40%,rgba(139,92,246,0.35) 0%,transparent 65%)',
+    detail: {
+      problem: [
+        "When preparing for multiple job interviews simultaneously, I found myself maintaining several versions of the same prep document — one per company, with overlapping questions like 'Tell me about yourself' answered slightly differently in each.",
+        "The problem: which version was most current? Which had the best answer? Reconciling them manually was tedious and error-prone."
+      ],
+      approach: [
+        "I designed and built DocMerger, a tool that accepts multiple .txt, .md, or .docx files, uses Claude AI to identify thematically similar sections across documents, and merges them by selecting the most recently modified file's version.",
+        "The tool also auto-evaluates the merged output across four quality dimensions, giving immediate feedback on completeness, consistency, clarity, and recency accuracy."
+      ],
+      process: [
+        { phase: 'Problem Framing', text: 'Identified the core pain: interview prep documents fragment over time across companies, with no easy way to consolidate the best, most current answers.' },
+        { phase: 'Design', text: 'Designed a two-panel interface: file upload on the left, AI-merged results with source attribution on the right. Kept the UX minimal to reduce friction.' },
+        { phase: 'AI Integration', text: 'Used Claude API (claude-sonnet-4-6) to identify common themes and merge content. Designed prompts to enforce recency-based selection logic.' },
+        { phase: 'Evaluation Layer', text: 'Added a self-evaluation step where AI scores its own output on 4 criteria (1–5 scale), providing a quality signal the user can act on.' }
+      ],
+      outcome: [
+        "DocMerger consolidates multiple interview prep documents into a single, coherent output in under 30 seconds. The built-in AI evaluation layer provides immediate quality feedback, reducing the manual review burden significantly."
+      ],
+      stats: [
+        { value: '<30s', label: 'End-to-end merge time' },
+        { value: '4',    label: 'AI quality evaluation criteria' },
+        { value: '3',    label: 'Supported file formats (.txt .md .docx)' }
+      ],
+      role: 'Solo builder — product strategy, UX design, and full-stack implementation with Next.js and Claude API.',
+      github: 'https://github.com/Soyeon-Baik/Doc-Merger'
+    }
+  }
+];
+
+/* =====================================================
+   ✏️  WRITING DATA
+   새 글 추가 = 이 배열에 객체 하나 추가하면 끝!
+   ===================================================== */
+const WRITING = [
+  {
+    id: 'ai-evaluation',
+    topic: 'AI Product',
+    title: 'A Practical Framework for AI Evals',
+    excerpt: 'AI products are probabilistic — the same input can yield different outputs. Evaluating them requires a more structured and layered approach than traditional products.',
+    date: 'Mar 2026',
+    body: `
+      <p>Most traditional products are deterministic. When the same input is given, the system produces the same output based on predefined logic. Success can be measured through clearly defined user flows and metrics.</p>
+      <p>AI products, however, are inherently probabilistic. The same input can yield different outputs. While we can tune parameters like temperature or tone, the output is not guaranteed to be consistent. Because of this, evaluating AI products requires a more structured and layered approach.</p>
+      <p>This post outlines a practical, end-to-end framework for evaluating AI-powered products with real-world example.</p>
+
+      <h2>0. Define What Success Means</h2>
+      <p>As always, the first step is to clearly define what success looks like.</p>
+      <p>For AI products, this should be defined at two levels — for both the user and the product. I recommend starting from user-level success and then breaking it down into product-level metrics.</p>
+      <p><strong>User-level success</strong></p>
+      <ul>
+        <li>Did the user accomplish their goal?</li>
+        <li>Did the system reduce effort or time?</li>
+      </ul>
+      <p><strong>Product-level success</strong></p>
+      <ul>
+        <li>Task success rate</li>
+        <li>Time to resolution</li>
+        <li>User satisfaction</li>
+      </ul>
+      <p>For example, in a conversational product discovery experience, success is about helping users find the right products or information more easily and quickly, so they can make confident purchase decisions.</p>
+      <p>Without this step, evaluation becomes disconnected from actual user value and risks over-optimizing proxy metrics.</p>
+
+      <h2>1. Establish a Golden Dataset</h2>
+      <p>Once success is defined, the next step is to create a reliable evaluation baseline — a golden dataset.</p>
+      <p>A <strong>golden dataset</strong> consists of input-output pairs. Inputs are real user queries (including long-tail and ambiguous cases), and ideal outputs are high-quality responses defined with domain experts.</p>
+      <p>In a brand chatbot context, this step involves categorizing use cases by user intent, such as product discovery, comparison, and support-related queries, and defining corresponding answer sets. In practice, I worked closely with domain experts (e.g., brand managers, marketing teams) to define what good responses look like across these use cases.</p>
+      <p>This dataset provides a consistent standard for measuring system quality and enables repeatable evaluation.</p>
+
+      <h2>2. Offline Evaluation (System Quality)</h2>
+      <p>Offline evaluation measures how well the system performs in a controlled environment before production. Typical evaluation approaches include the following:</p>
+      <ul>
+        <li>Rubric-based scoring (manual or model-assisted)</li>
+        <li>Accuracy and factuality checks</li>
+        <li>Hallucination detection</li>
+        <li>Coverage of edge cases</li>
+      </ul>
+      <p>For example, in a product-focused chatbot, offline evaluation can measure whether responses correctly recommend relevant products and provide sufficient supporting details (e.g., key features, differences).</p>
+      <p>At this stage, the key question is "Can the system produce high-quality outputs?"</p>
+      <p>In this stage, two complementary approaches help scale offline evaluation.</p>
+      <p>First, LLM-as-judge uses a separate language model to score responses against a rubric. This enables fast and repeatable evaluation across large response sets.</p>
+      <p>Second, human-in-the-loop review runs in parallel. Domain experts periodically validate a sample of the golden dataset to ensure the rubric remains reliable and to catch blind spots that automated scoring may overlook.</p>
+
+      <h2>3. Online Experimentation (Controlled Comparison)</h2>
+      <p>Once baseline quality is established, it's time to test it in a live but controlled environment through experimentation.</p>
+      <p>This stage focuses on comparing variants, not measuring final success.</p>
+      <p>Typical experiments include:</p>
+      <ul>
+        <li>Different prompting strategies</li>
+        <li>Retrieval configurations (e.g., number or type of documents)</li>
+        <li>Response formats (e.g., concise vs. structured with explanations)</li>
+      </ul>
+      <p>These experiments test system-level variations that run on top of the same underlying model (rather than testing different models themselves).</p>
+      <p>For example, one variant might use a concise response with minimal context, while another uses a more structured format with richer context and citations. In one case, I tested these variations to understand which better supports user decision-making during product discovery.</p>
+      <p>Metrics at this stage are comparative signals, such as:</p>
+      <ul>
+        <li>Click-through rate (CTR)</li>
+        <li>Re-try rate</li>
+        <li>Conversation completion</li>
+      </ul>
+      <p>The key question here is, "Which version performs better relative to another?"</p>
+      <p>This stage helps identify better configurations. However, it does not yet confirm whether the product is truly effective.</p>
+
+      <h2>4. Behavioral &amp; Outcome Metrics (Real Impact)</h2>
+      <p>Now, after selecting the strongest variant, it's time to measure actual user impacts.</p>
+      <p>This stage answers a fundamentally different question, "Did the product actually help the user achieve their goal?"</p>
+      <p>Unlike online experimentation, this is not about comparing versions, but about validating real impact and measuring success based on what we defined from the start.</p>
+      <p>Key metrics include:</p>
+      <ul>
+        <li>Task completion rate</li>
+        <li>Reduction in follow-up queries</li>
+        <li>Conversion or downstream actions</li>
+        <li>User satisfaction</li>
+      </ul>
+      <p>For example, even if a chatbot increases CTR or engagement, a high rate of follow-up questions may indicate that responses are not fully resolving user needs.</p>
+
+      <h2>5. Continuous Feedback Loop</h2>
+      <p>Like any other product, AI products require continuous iteration.</p>
+      <p>Feedback signals include the following:</p>
+      <ul>
+        <li>Explicit product feedback (ratings, thumbs up/down)</li>
+        <li>Implicit behavioral signals (query reformulation, abandonment, repeated interactions)</li>
+      </ul>
+      <p>These signals can be used to continuously improve the system by:</p>
+      <ul>
+        <li>Improving prompts or retrieval strategies</li>
+        <li>Refining ranking logic</li>
+        <li>Updating training data</li>
+      </ul>
+      <blockquote><p>Evaluate → Learn → Improve → Re-evaluate.</p></blockquote>
+      <p>This loop is what enables AI products to continuously improve and stay aligned with real user needs.</p>
+
+      <h2>Evaluation Principles: Helpful, Honest, Harmless</h2>
+      <p>Across all of these stages, there's one framework that I keep in the back of my mind, "HHH" (Helpful, Honest, and Harmless) framework from Anthropic. This is a useful northstar for setting quality criteria.</p>
+      <p>In my experience, this framework is especially useful for translating abstract evaluation goals into concrete criteria:</p>
+      <ul>
+        <li><strong>Helpful</strong> — Does the response actually solve the user's problem? Measured through task completion and relevance.</li>
+        <li><strong>Honest</strong> — Does the product avoid making up information when uncertain? Does it clearly acknowledge when information is unavailable? Evaluated through hallucination checks and fallback behavior.</li>
+        <li><strong>Harmless</strong> — Does the system avoid unsafe guidance or inappropriate response? Enforced through policy constraints and safety evaluation.</li>
+      </ul>
+      <p>In practice, I always think about whether the system is hitting all three at the same time. Embedding these principles into evaluation criteria ensures the system is not only effective, but also trustworthy.</p>
+
+      <h2>Key Takeaways</h2>
+      <p>Evaluating AI products is not a one-time process. It requires a layered framework that connects model performance to real user outcomes by following these steps:</p>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content"><div class="timeline-text" style="color:var(--ink-muted);">Define success based on user goals</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content"><div class="timeline-text" style="color:var(--ink-muted);">Build a golden dataset</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content"><div class="timeline-text" style="color:var(--ink-muted);">Evaluate system quality offline</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content"><div class="timeline-text" style="color:var(--ink-muted);">Compare variants through experimentation</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content"><div class="timeline-text" style="color:var(--ink-muted);">Measure real-world outcomes</div></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="timeline-content"><div class="timeline-text" style="color:var(--ink-muted);">Continuously improve through feedback</div></div>
+        </div>
+      </div>
+      <p>Ultimately, strong AI products are not defined by how well they generate responses, but by how effectively they help users accomplish what they came for.</p>
+    `
+  },
+  {
+    id: 'ecommerce-search',
+    topic: 'Search & Discovery',
+    title: 'What I Learned Building E-commerce Search',
+    excerpt: 'Why keyword search fails, why vector alone isn\'t enough, and what actually works in production.',
+    date: 'Dec 2025',
+    body: `
+      <p>Search looks simple on the surface. A user types a query, and the system returns results. But in practice, search is not just a retrieval problem. It is an intent understanding problem. This becomes especially clear in e-commerce, where users rarely express their intent in clean, structured keywords.</p>
+
+      <h2>Phase 1: Lexical Search — Matching What Users Say</h2>
+      <p>Most early e-commerce search systems rely on lexical matching techniques like BM25. They treat queries and products as collections of tokens and rank results based on keyword overlap.</p>
+      <p>This approach works well when users and systems "speak the same language."</p>
+      <p>It's fast, scalable, and deterministic. So it's easy to debug and reason about why specific results come out.</p>
+      <p>That being said, the limitation is that it retrieves what users type or say, not what they "mean".</p>
+      <p>I saw this clearly while working on Samsung's on-site search. For queries like "galaxy earphones", the system often returned Galaxy phones at the top of the results. From a keyword perspective, this was correct. From a user perspective, it was clearly wrong.</p>
+      <p>This gap between keyword matching and user intent is where most search problems begin.</p>
+
+      <h2>Phase 2: The Patchwork Era — Trying to Fix It Manually</h2>
+      <p>To address these gaps, teams typically add layers of heuristics — synonym dictionaries, query rewriting, typo correction, redirect rules, and manual ranking adjustments.</p>
+      <p>These fixes help in specific cases, but they don't scale. Rules start conflicting with each other, long-tail queries remain unsolved, and maintenance cost grows quickly.</p>
+      <p>The system doesn't actually get smarter. It just becomes more complicated.</p>
+
+      <h2>Phase 3: The Shift to Semantic Search</h2>
+      <p>Semantic search changes the approach by representing queries and products as embeddings. Instead of matching keywords, the system matches meaning.</p>
+      <p>This enables better handling of synonyms, improved long-tail query coverage, and more flexible matching between queries and products. At first glance, this seems like the solution.</p>
+      <p>But in practice, it introduces a different set of challenges. Results become less predictable, relevance is harder to explain, evaluation becomes more complex, and infrastructure cost increases.</p>
+      <p>Semantic search improves understanding — but reduces manual control. The heuristic layers built in Phase 2 become less necessary, but so does the ability to directly intervene when something goes wrong.</p>
+
+      <h2>The Reality: Hybrid Systems</h2>
+      <p>In production, no system is purely lexical or purely semantic. Modern search systems are hybrid.</p>
+      <p>Lexical search provides precision and stability. Semantic search provides recall and intent understanding. The challenge is how to combine them effectively.</p>
+      <p>This became clear in my own work. I initially assumed the issue with accessory queries was a UI problem and proposed separating them into a dedicated tab. However, behavioral data showed that users rarely interacted with tabs, regardless of query type.</p>
+      <p>This shifted the focus away from UI and toward improving retrieval and ranking.</p>
+      <p>I analyzed queries with significantly low CTR and found that many of them were intent-mismatch cases. This led us to expand candidate retrieval beyond keyword matching and incorporate semantic signals for better intent coverage.</p>
+      <p>To measure progress, I tracked metrics at two levels. On the model side: MRR, precision@k, and recall to evaluate retrieval quality. On the user side: 1st-result CTR and overall search result CTR to validate whether improvements actually changed behavior.</p>
+      <p>As a result, we observed a meaningful lift in CTR for affected queries and a reduction in query reformulation rates.</p>
+      <p>Ultimately, search quality wasn't determined by any single model, but by how lexical signals, semantic signals, and behavioral data worked together.</p>
+
+      <h2>Final Insight</h2>
+      <p>Search is not just about retrieving results. It is a system that must align user intent with product representation, while balancing relevance, business goals, and user trust.</p>
+      <p>Moving from keyword search to vector search is not a linear upgrade. It is a shift in how we think about the problem.</p>
+      <p>Hybrid search is not a transition phase. It is the system.</p>
+      <blockquote><p>There is no single "best" search system — only better trade-offs.</p></blockquote>
+    `
+  }
+  /* ✏️ 새 글은 여기에 추가하세요 */
+];
+
+/* =====================================================
+   THUMBNAIL RENDERERS
+   ===================================================== */
+const THUMBS = {
+  search: (p) => `
+    <div style="width:100%;height:100%;position:relative;background:${p.heroGradient}">
+      <div style="position:absolute;inset:0;background:${p.heroGlow}"></div>
+      <div class="thumb-inner">
+        <div class="mock-tags">
+          <div class="mock-tag active">Recommended</div>
+          <div class="mock-tag">Trending</div>
+          <div class="mock-tag">New Arrivals</div>
+        </div>
+        <div class="mock-search-bar">
+          <div class="mock-search-icon"></div>
+          <span class="mock-search-text">Search for anything...</span>
+        </div>
+        <div class="mock-results">
+          <div class="mock-result-item">
+            <div class="mock-result-dot" style="background:rgba(45,91,227,0.5)"></div>
+            <div class="mock-result-lines">
+              <div class="mock-line" style="width:65%"></div>
+              <div class="mock-line" style="width:40%;opacity:0.5"></div>
+            </div>
+          </div>
+          <div class="mock-result-item">
+            <div class="mock-result-dot" style="background:rgba(196,118,42,0.5)"></div>
+            <div class="mock-result-lines">
+              <div class="mock-line" style="width:80%"></div>
+              <div class="mock-line" style="width:55%;opacity:0.5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+  docmerger: (p) => `
+    <div style="width:100%;height:100%;position:relative;background:${p.heroGradient}">
+      <div style="position:absolute;inset:0;background:${p.heroGlow}"></div>
+      <div class="thumb-inner">
+        <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+          <div style="display:flex;gap:8px;align-items:center">
+            <div style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:6px;letter-spacing:0.06em;">DOC A</div>
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.15);margin-bottom:4px;width:80%"></div>
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.1);width:55%"></div>
+            </div>
+            <div style="color:rgba(139,92,246,0.8);font-size:18px">→</div>
+            <div style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:6px;letter-spacing:0.06em;">DOC B</div>
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.15);margin-bottom:4px;width:70%"></div>
+              <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.1);width:40%"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:4px 0;">
+            <div style="flex:1;height:1px;background:rgba(139,92,246,0.3)"></div>
+            <div style="font-size:11px;color:rgba(139,92,246,0.7);letter-spacing:0.08em;">AI MERGE</div>
+            <div style="flex:1;height:1px;background:rgba(139,92,246,0.3)"></div>
+          </div>
+          <div style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:rgba(139,92,246,0.8);margin-bottom:8px;letter-spacing:0.06em;">MERGED OUTPUT</div>
+            <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.2);margin-bottom:4px;width:90%"></div>
+            <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.15);margin-bottom:4px;width:75%"></div>
+            <div style="height:6px;border-radius:3px;background:rgba(255,255,255,0.1);width:60%"></div>
+          </div>
+        </div>
+      </div>
+    </div>`,
+  metrics: (p) => `
+    <div style="width:100%;height:100%;position:relative;background:${p.heroGradient}">
+      <div style="position:absolute;inset:0;background:${p.heroGlow}"></div>
+      <div class="thumb-inner">
+        <div class="mock-metric-grid">
+          <div class="mock-metric"><div class="mock-metric-value">4.2×</div><div class="mock-metric-label">Conversion lift</div></div>
+          <div class="mock-metric"><div class="mock-metric-value">91%</div><div class="mock-metric-label">Model accuracy</div></div>
+          <div class="mock-metric"><div class="mock-metric-value">2.1s</div><div class="mock-metric-label">Avg. latency</div></div>
+          <div class="mock-metric"><div class="mock-metric-value">↑23</div><div class="mock-metric-label">NPS points</div></div>
+        </div>
+        <div class="mock-chart"><div class="mock-chart-line"></div></div>
+      </div>
+    </div>`,
+  samsung: (p) => `
+    <img src="thumbnail_samsung.png" alt="Samsung AI Search" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:12px 12px 0 0">`,
+  grocery: (p) => `
+    <img src="thumbnail_ubereats.png" alt="Uber Eats Grocery" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:12px 12px 0 0">`,
+  drtail: (p) => `
+    <img src="thumbnail_drtail.png" alt="Dr. Tail AI Triage" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:12px 12px 0 0">`
+};
+
+/* =====================================================
+   RENDERERS
+   ===================================================== */
+function renderContact() {
+  return `
+    <div class="contact-strip">
+      <div class="contact-inner">
+        <div class="contact-left">
+          <h3>Let's build<br>something great.</h3>
+          <p>Open to Product Manager roles at companies building with AI.</p>
+        </div>
+        <div class="contact-links">
+          <a href="mailto:rileybaik21@gmail.com" class="contact-link primary">Email me</a>
+          <a href="https://linkedin.com/in/r-baik" class="contact-link secondary">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <span class="foot-name">Riley Baik</span>
+      <span class="foot-copy">© 2026</span>
+    </footer>`;
+}
+
+function renderHome() {
+  const cards = PROJECTS.map((p, i) => `
+    <div class="project-card" onclick="${p.externalUrl ? `window.location.href='${p.externalUrl}'` : `showDetail('${p.id}')`}">
+      <div class="project-thumb">${THUMBS[p.thumb](p)}</div>
+      <div class="project-info">
+        <div class="project-meta">
+          <div class="project-company">${p.company}</div>
+          <h3 class="project-title">${p.titleCard}</h3>
+          <p class="project-desc">${p.description}</p>
+          <div class="project-tags">${p.tags.map(t => `<span class="project-tag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="project-footer">
+          <div class="project-arrow">→</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  return `
+    <section class="hero">
+      <div class="hero-tag fade-up">Open to new AI PM opportunities</div>
+      <h1 class="fade-up">Riley Baik</h1>
+      <p class="hero-sub fade-up">Senior AI PM · Search & Discovery in Commerce</p>
+      <p class="hero-prev fade-up">
+        Samsung <span class="dot">·</span> Amazon <span class="dot">·</span> Kolonmall
+      </p>
+  <!--
+      <p class="hero-prev fade-up">
+        <span>prev.</span> Amazon <span class="dot">·</span> Samsung <span class="dot">·</span> Kolonmall
+      </p>
+      -->
+    </section>
+    <section class="section" id="work">
+      <div class="section-label">Selected Work</div>
+      <div class="projects">${cards}</div>
+    </section>
+    <section class="section" id="writing">
+      <div class="section-label">Writing</div>
+      <div class="writing-grid">
+        ${WRITING.map(w => `
+          <div class="writing-card" onclick="showWriting('${w.id}')">
+            <div class="writing-topic">${w.topic}</div>
+            <div class="writing-title">${w.title}</div>
+            <div class="writing-excerpt">${w.excerpt}</div>
+            <div class="writing-footer">
+              <span class="writing-date">${w.date}</span>
+              <span class="writing-arrow">→</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </section>
+    <section class="about-strip" id="about">
+      <div class="section-label">About</div>
+      <div class="about-grid">
+        <div>
+          <div class="about-photo">
+          <img src="photo.jpg" style="width:100%;height:100%;object-fit:cover;object-position:55% 25%;transform:scale(1.4);transform-origin:55% 25%;">
+          </div>
+        </div>
+        <div class="about-content">
+          <h2>Hi, I'm Riley —<br></h2>
+          <p>I’m a Product Manager focused on building consumer-facing products that make complex experiences simpler, smarter, and more useful.</p>
+          <p>I’ve shipped data-driven features used by millions at Amazon and Samsung, leading work across personalization, discovery, and customer experience. I bring a strong analytical lens to product decisions and care deeply about building products that create real value for users and the business.</p>
+          <p>These days, I’m especially interested in how AI can reshape user experience and create more intuitive, useful consumer products.</p>
+
+          <div class="skill-chips">
+            ${['AI/ML Products','Search & Discovery','Personalization','E-commerce','Data Analytics'].map(s=>`<span class="skill-chip">${s}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+    ${renderContact()}`;
+}
+
+function renderWritingDetail(w) {
+  return `
+    <div style="padding-top:80px;">
+      <div class="writing-detail">
+        <div class="back-btn" onclick="showPage('home'); scrollToSection('#writing')" style="background:var(--surface);color:var(--ink);border:none;margin-bottom:40px;">← Back to writing</div>
+        <div class="writing-topic" style="margin-bottom:12px;">${w.topic}</div>
+        <h1>${w.title}</h1>
+        <div class="writing-detail-meta">
+          <span>${w.date}</span>
+        </div>
+        <div class="writing-body">${w.body}</div>
+      </div>
+    </div>
+    ${renderContact()}`;
+}
+
+function renderDetail(p) {
+  const timeline = p.detail.process.map(s => `
+    <div class="timeline-item">
+      <div class="timeline-left"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+      <div class="timeline-content">
+        <div class="timeline-phase">${s.phase}</div>
+        <div class="timeline-text">${s.text}</div>
+      </div>
+    </div>`).join('');
+
+  const stats = p.detail.stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-card-value">${s.value}</div>
+      <div class="stat-card-label">${s.label}</div>
+    </div>`).join('');
+
+  return `
+    <div class="detail-hero">
+      <div class="detail-hero-bg" style="background:${p.heroGradient}">
+        <div style="position:absolute;inset:0;background:${p.heroGlow}"></div>
+      </div>
+      <div class="detail-hero-content">
+        <div class="back-btn" onclick="showPage('home')">← Back to work</div>
+        <div class="detail-company">${p.company} · ${p.period}</div>
+        <h1 class="detail-title">${p.title.replace('\n','<br>')}</h1>
+        <div class="detail-tags">${p.tags.map(t=>`<span class="detail-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section">
+            <div class="detail-section-label">Problem</div>
+            ${p.detail.problem.map(t=>`<p>${t}</p>`).join('')}
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-label">Approach</div>
+            ${p.detail.approach.map(t=>`<p>${t}</p>`).join('')}
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-label">Process</div>
+            <div class="timeline">${timeline}</div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-section-label">Outcome</div>
+            ${p.detail.outcome.map(t=>`<p>${t}</p>`).join('')}
+          </div>
+        </div>
+        <div>
+          ${stats}
+          <div class="stat-card" style="margin-top:32px;background:var(--ink);color:var(--bg);">
+            <div style="font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(242,241,238,0.4);margin-bottom:12px;">My Role</div>
+            <div style="font-size:14px;line-height:1.7;color:rgba(242,241,238,0.75);">${p.detail.role}</div>
+          </div>
+          ${p.detail.github ? `<a href="${p.detail.github}" target="_blank" style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:14px 20px;border-radius:var(--radius);background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px;font-weight:400;transition:all 0.2s;" onmouseover="this.style.background='#dddbd6'" onmouseout="this.style.background='var(--surface)'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            View on GitHub
+          </a>` : ''}
+        </div>
+      </div>
+    </div>
+    ${renderContact()}`;
+}
+
+/* =====================================================
+   ROUTING
+   ===================================================== */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active','page-enter'));
+  const target = document.getElementById('page-' + id);
+  if (target) { target.classList.add('active','page-enter'); window.scrollTo({top:0,behavior:'instant'}); }
+}
+
+function showWriting(id) {
+  const w = WRITING.find(w => w.id === id);
+  if (!w) return;
+  document.getElementById('page-writing').innerHTML = renderWritingDetail(w);
+  showPage('writing');
+}
+
+function showDetail(id) {
+  const p = PROJECTS.find(p => p.id === id);
+  if (!p) return;
+  document.getElementById('page-detail').innerHTML = renderDetail(p);
+  showPage('detail');
+}
+
+function scrollToSection(hash) {
+  setTimeout(() => { const el = document.querySelector(hash); if (el) el.scrollIntoView({behavior:'smooth'}); }, 50);
+}
+
+document.getElementById('page-home').innerHTML = renderHome();
+</script>
+</body>
+</html>
