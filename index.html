@@ -198,6 +198,7 @@
 const PROJECTS = [
   {
     id: 'uber-eats-grocery',
+    section: 'builds',
     company: 'Case Study',
     period: 'Concept Case Study',
     title: 'Redesigning Uber Eats\nGrocery for Item-Led Planning',
@@ -211,9 +212,26 @@ const PROJECTS = [
     heroGlow: 'radial-gradient(ellipse at 40% 60%,rgba(5,150,105,0.3) 0%,transparent 65%)',
     detail: {}
   },
-  /* ✏️ 새 프로젝트는 여기에 객체를 추가하세요 */,
+  /* ✏️ 새 프로젝트는 여기에 객체를 추가하세요 */
+  {
+    id: 'samsung',
+    section: 'work',
+    company: 'Samsung',
+    period: '2022 – 2024',
+    title: 'Hybrid AI Search\nat Samsung.com',
+    titleCard: 'Hybrid AI Search at Samsung.com',
+    description: 'Improving on-site search relevance by selectively augmenting lexical retrieval with semantic understanding — without disrupting exact-match performance.',
+    tags: ['AI/ML', 'Search', 'E-commerce'],
+    impact: { value: '$12M+', label: 'Revenue impact attributed' },
+    thumb: 'samsung',
+    externalUrl: 'samsung-search.html',
+    heroGradient: 'linear-gradient(135deg,#0d1f2d 0%,#0a2540 50%,#0f3460 100%)',
+    heroGlow: 'radial-gradient(ellipse at 60% 40%,rgba(37,109,155,0.3) 0%,transparent 65%)',
+    detail: {}
+  },
   {
     id: 'drtail',
+    section: 'builds',
     company: 'Case Study',
     period: 'Concept Case Study',
     title: 'Real-Time AI Triage Agent\nfor Pet Health',
@@ -229,6 +247,7 @@ const PROJECTS = [
   },
   {
     id: 'docmerger',
+    section: 'builds',
     company: 'Personal Project',
     period: '2026',
     title: 'DocMerger\nAI Document Tool',
@@ -570,8 +589,8 @@ function renderContact() {
     </footer>`;
 }
 
-function renderHome() {
-  const cards = PROJECTS.map((p, i) => `
+function renderCard(p) {
+  return `
     <div class="project-card" onclick="${p.externalUrl ? `window.location.href='${p.externalUrl}'` : `showDetail('${p.id}')`}">
       <div class="project-thumb">${THUMBS[p.thumb](p)}</div>
       <div class="project-info">
@@ -585,7 +604,12 @@ function renderHome() {
           <div class="project-arrow">→</div>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+}
+
+function renderHome() {
+  const workCards = PROJECTS.filter(p => p.section === 'work').map(renderCard).join('');
+  const buildCards = PROJECTS.filter(p => p.section === 'builds').map(renderCard).join('');
 
   return `
     <section class="hero">
@@ -603,7 +627,11 @@ function renderHome() {
     </section>
     <section class="section" id="work">
       <div class="section-label">Selected Work</div>
-      <div class="projects">${cards}</div>
+      <div class="projects">${workCards}</div>
+    </section>
+    <section class="section" id="builds">
+      <div class="section-label">Projects & Builds</div>
+      <div class="projects">${buildCards}</div>
     </section>
     <section class="section" id="writing">
       <div class="section-label">Writing</div>
