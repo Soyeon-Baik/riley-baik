@@ -188,8 +188,8 @@
     <!-- ── Sticky Sidebar Nav ── -->
     <aside class="sidebar-nav">
       <a href="#section-1" data-nav="section-1">The Problem</a>
-      <a href="#section-2" data-nav="section-2">Solution Strategy</a>
-      <a href="#section-3" data-nav="section-3">Why This Approach</a>
+      <a href="#section-2" data-nav="section-2">The Solution</a>
+      <a href="#section-3" data-nav="section-3">Trade Offs</a>
       <a href="#section-4" data-nav="section-4">Impact</a>
     </aside>
 
@@ -199,37 +199,43 @@
       <!-- 1. The Problem -->
       <div class="detail-section" id="section-1">
         <div class="detail-section-label">The Problem</div>
-        <p>Samsung.com's on-site search was built primarily on lexical matching. That worked well for exact queries, but often broke down when intent was ambiguous. A search like "Galaxy Watch" could return a mix of phones, watches, and TVs because the engine matched shared tokens rather than actual shopping intent.</p>
-        <p>As the catalog expanded, the short-term fix was to layer on rules: category dictionaries, synonym maps, homonym handling, and redirect logic. Each rule addressed a specific failure case, but the system became increasingly brittle. Fixing one query could create regressions elsewhere, and maintaining relevance meant maintaining a growing set of exceptions that did not scale.</p>
+        <p>Samsung.com's on-site search was built primarily on keyword matching logic. That worked well for exact queries, but failed when intent was ambiguous. A search like "Galaxy Watch" could return a mix of phones, watches, and TVs because the engine matched shared tokens (keywords) rather than actual shopping intent.</p>
+        <p>The short-term fix was to layer on rules: category dictionaries, synonym maps, homonym handling, and redirect logic. Each rule addressed a specific failure case, but the system became increasingly brittle. Fixing one query could create regressions elsewhere, and surfacing the right products meant managing an exception list that grew faster than the team could keep up with.</p>
       </div>
 
-      <!-- 2. Solution Strategy -->
+      <!-- 2. The Solution-->
       <div class="detail-section" id="section-2">
-        <div class="detail-section-label">Solution Strategy</div>
-        <p>Rather than replacing the search stack entirely, I focused on identifying where lexical search was actually failing users and applying AI only to those cases.</p>
+        <div class="detail-section-label">The Solution</div>
+        <p>AI could improve relevance for ambiguous queries, but introducing it raised two questions: where to apply it, and how to integrate it.</p>
+        <p>The solution was a hybrid AI search system: AI layer (semantic retrieval) was added for ambiguous queries where keyword matching logic was failing, while the existing keyword matching logic (lexical search) continued to handle exact-match queries.</p>
+        <p>Two decisions shaped this approach.</p>
 
-        <h3>Step 1 — Identify the failure surface</h3>
-        <p>I used low search-result CTR as a proxy for intent mismatch. Queries with impressions but weak click engagement often indicated that results were technically related, but not aligned with what users actually meant. These queries became the target set for intervention.</p>
+        <h3>Decision 1: Scope — target failing queries first</h3>
+        <p>Rather than applying AI universally, I focused on queries where keyword-based search was failing. To identify them, I used low search-result CTR and high no-result rates as signals. Queries that didn't lead to clicks, whether from missing or irrelevant results, in aggregate represented a meaningful share of failed searches even at low individual volume.</p>
 
-        <h3>Step 2 — Validate the concept</h3>
-        <p>I ran an initial proof of concept using semantic embeddings (SBERT) to test whether vector retrieval could better resolve ambiguous, intent-heavy queries than lexical matching alone.</p>
-
-        <h3>Step 3 — Design a hybrid routing model</h3>
-        <p>I partnered with Samsung's AI Research team to implement a hybrid search flow: low-CTR, high-ambiguity queries were routed to an in-house vector search model, while exact-match queries continued through the existing lexical pipeline. This let us improve relevance where semantic understanding mattered most without disrupting high-performing keyword behavior.</p>
+        <h3>Decision 2: Architecture - full replacement vs. selective augmentation</h3>
+        <p>Keyword-matching logic still performed well for exact-match queries like "Galaxy S24 Ultra" where precision mattered most. A full replacement would have introduced unnecessary risk, so I kept the lexical search and applied semantic retrieval only where it was failing.</p>
+        <p>I validated this with a PoC using semantic embeddings, then designed a routing layer that preserved the lexical pipeline for exact-match queries while sending ambiguous and low-engagement queries to vector retrieval. Also, the lexical search was retained as a fallback so search could continue if the AI engine failed or became unavailable. The model was released progressively across eligible query traffic, with query-level evaluation and engagement metrics monitored at each stage.</p>
       </div>
 
-      <!-- 3. Why This Approach -->
+      <!-- 3. Trade off -->
       <div class="detail-section" id="section-3">
-        <div class="detail-section-label">Why This Approach</div>
-        <p>A full replacement would have introduced unnecessary risk. Lexical search still performed well for exact product queries like "Galaxy S24 256GB", where precision and determinism mattered most. The better product decision was not to replace search with AI everywhere, but to selectively augment the experience where users were most likely to encounter intent mismatch.</p>
-        <p>To reduce launch risk, I rolled the hybrid routing model out in phases — 5%, 20%, and then 50% of eligible query traffic — validating relevance and engagement performance at each stage before expanding exposure.</p>
-        <p>The result was a more scalable search strategy: preserving the speed and reliability of lexical search while using AI to improve the subset of queries where rules were no longer enough.</p>
+        <div class="detail-section-label">Trade-offs</div>
+        <h3>Semantic recall vs. Exact-match precision</h3>
+        <p>Semantic retrieval improved ambiguous queries, but applying it universally risked over-generalizing exact product searches and returning related but unintended results. </p>
+        
+        <h3>Generalization vs. Explainability</h3>
+        <p>Rule-based systems were brittle but easy to trace. Vector retrieval handled new query patterns without hand-coded rules, but the cost was explainability. When results were wrong, it was harder to diagnose the cause.</p>
+        <p>This was a concern for business and category management teams, who needed to understand why specific products surfaced. I treated this as a rollout risk and managed it through phased rollout, query-level evaluation, and metric monitoring so regressions could be caught before full roll-out.</p>
+        
+        <h3>Initial complexity vs. Long-term scalability</h3>
+        <p>Adding a semantic layer introduced upfront complexity, but continuing to patch the rule system meant maintaining an exception list with no ceiling. The added complexity was a worthwhile cost to avoid accumulating ops/tech debt indefinitely.</p>
       </div>
 
       <!-- 4. Impact -->
       <div class="detail-section" id="section-4">
         <div class="detail-section-label">Impact</div>
-        <p>I evaluated the rollout across three layers: Precision@3 to measure top-result relevance, search-result CTR to capture whether users engaged with the returned results, and search conversion to determine whether improved relevance translated into downstream business impact. This ensured the model was assessed not only on retrieval quality, but on whether it actually improved the shopping experience.</p>
+        <p>The rollout was evaluated across two layers: retrieval quality (Precision@3, MRR, Recall) and user behavior (search CTR, search-assisted conversion, query reformulation rate). This combination ensured improvements in semantic relevance translated into actual shopping behavior change.</p>
       </div>
 
     </div>
