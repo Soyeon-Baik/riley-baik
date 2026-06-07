@@ -1,0 +1,222 @@
+/* =========================================================
+   Riley Baik — Portfolio design system
+   One stylesheet for every page. Change a token here and the
+   whole site updates. Color rule: --hl is a HIGHLIGHTER only.
+   Never use it as text color or as a filled block.
+   ========================================================= */
+
+:root {
+  --ink:    #0a0a0a;   /* primary text */
+  --grey:   #8c8c8c;   /* labels, meta */
+  --grey-2: #5a5a5a;   /* body text */
+  --line:   #e4e4e4;   /* hairlines */
+  --bg:     #ffffff;
+  --hl:     #CCF23E;   /* highlighter — the only color. swap this one value to re-accent the site */
+  --measure: 660px;    /* reading column */
+  --max:     1080px;   /* detail page container */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--ink);
+  font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+/* the only color in the system */
+.hl { background: var(--hl); padding: 0 3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* ---------- shared top bar ---------- */
+.top {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 28px 48px; border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; background: rgba(255,255,255,.9); backdrop-filter: blur(8px); z-index: 100;
+}
+.top .name { justify-self: start; font-size: 14px; font-weight: 700; letter-spacing: -0.01em; }
+.top .nav-center { justify-self: center; display: flex; gap: 26px; font-size: 14px; }
+.top .nav-center a { color: var(--grey-2); }
+.top .nav-center a:hover { color: var(--ink); }
+.top .links { justify-self: end; display: flex; align-items: center; gap: 16px; }
+.top .links a { display: inline-flex; }
+.top .links svg { width: 18px; height: 18px; display: block; fill: var(--ink); transition: opacity .15s; }
+.top .links a:hover svg { opacity: .5; }
+
+/* =========================================================
+   HOME  (<body class="home">)
+   ========================================================= */
+body.home { min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.home .top { position: static; border-bottom: none; }
+
+.home .main-split {
+  flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; padding: 0 48px 64px; gap: 64px;
+}
+.home .left { display: flex; flex-direction: column; justify-content: center; height: 100%; position: relative; }
+.home .left h1 { font-size: clamp(60px, 8.5vw, 132px); font-weight: 700; letter-spacing: -0.045em; line-height: 0.92; }
+.home .intro { font-size: clamp(20px, 2vw, 26px); font-weight: 400; line-height: 1.3; margin-top: 32px; max-width: 19ch; letter-spacing: -0.01em; }
+.home .bio-meta { position: absolute; bottom: 0; left: 0; font-size: 13px; color: var(--grey); line-height: 1.6; }
+
+.home .right { display: flex; flex-direction: column; justify-content: center; gap: 34px; }
+.home .group { display: grid; grid-template-columns: 110px 1fr; align-items: start; column-gap: 28px; }
+.home .cat { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.home .items { display: flex; flex-direction: column; gap: 10px; }
+.home .item { display: flex; align-items: baseline; gap: 12px; width: fit-content; }
+.home .item .t { font-size: 19px; letter-spacing: -0.01em; padding: 0 3px; transition: background .15s; }
+.home .item .m { font-size: 13px; color: var(--grey); }
+.home .item:hover .t { background: var(--hl); }
+.home .more { font-size: 14px; color: var(--grey); margin-top: 4px; align-self: flex-start; transition: color .15s; }
+.home .more:hover { color: var(--ink); }
+
+/* =========================================================
+   DETAIL / CASE STUDY
+   ========================================================= */
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 48px; }
+
+.hero { padding: 80px 0 8px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-2); }
+.hero h1 { font-size: clamp(52px, 8vw, 104px); font-weight: 700; letter-spacing: -0.045em; line-height: 0.95; margin: 26px 0 22px; }
+.hero .sub { font-size: 19px; color: var(--grey-2); max-width: 62ch; line-height: 1.5; }
+
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 26px; margin-top: 46px; padding: 28px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+.meta .l { font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); margin-bottom: 7px; }
+.meta .v { font-size: 15px; font-weight: 600; }
+
+.block { padding: 72px 0; border-top: 1px solid var(--line); }
+.block:first-of-type { border-top: none; }
+.grid { display: grid; grid-template-columns: 160px 1fr; gap: 40px; }
+.aside .num { font-size: 15px; font-weight: 700; }
+.aside .lbl { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-2); margin-top: 6px; }
+.main { max-width: var(--measure); }
+.main.wide { max-width: none; }
+h2.t { font-size: clamp(24px, 3.2vw, 32px); font-weight: 700; line-height: 1.18; letter-spacing: -0.02em; margin-bottom: 18px; }
+.body { font-size: 16px; color: var(--grey-2); line-height: 1.75; }
+.body p + p { margin-top: 14px; }
+.body strong { color: var(--ink); font-weight: 700; }
+
+/* big-number stats — no fill, scale carries it. highlight ONE number with <span class="hl"> */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-top: 36px; padding-top: 30px; border-top: 1px solid var(--ink); }
+.stat .n { font-size: clamp(28px, 3.6vw, 44px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.stat .n .hl { padding: 0 4px; }
+.stat .sl { font-size: 12px; color: var(--grey); margin-top: 12px; line-height: 1.4; }
+
+/* callout — hairline indent, no color box */
+.callout { margin: 26px 0; padding: 4px 0 4px 22px; border-left: 1px solid var(--ink); font-size: 15.5px; color: var(--ink); line-height: 1.65; }
+.callout .lead { font-weight: 700; }
+
+/* two-column text — replaces cards. no background */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 30px; }
+.two .col { padding-top: 18px; border-top: 1px solid var(--ink); }
+.two .clabel { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey-2); margin-bottom: 10px; }
+.two h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.two p { font-size: 14px; color: var(--grey-2); line-height: 1.6; }
+
+/* diagram — keep monochrome / line art */
+.diagram { margin-top: 40px; }
+.diagram .lbl { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-2); }
+.diagram .frame { margin-top: 14px; border: 1px solid var(--line); aspect-ratio: 16/7; display: flex; align-items: center; justify-content: center; color: var(--grey); font-size: 13px; }
+
+/* swiss table — chosen = bold (no color) */
+table { width: 100%; border-collapse: collapse; margin-top: 28px; font-size: 14px; }
+thead th { text-align: left; padding: 0 14px 12px; border-bottom: 1px solid var(--ink); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+tbody td { padding: 14px; border-bottom: 1px solid var(--line); color: var(--grey-2); vertical-align: top; line-height: 1.5; }
+td.chosen { font-weight: 700; color: var(--ink); }
+td.no { color: var(--grey); }
+
+/* process — big numbers, no dots */
+.steps { margin-top: 32px; }
+.step { display: grid; grid-template-columns: 64px 1fr; gap: 24px; padding: 26px 0; border-top: 1px solid var(--line); }
+.step:first-child { border-top: none; }
+.step .sn { font-size: 30px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+.step .st { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step .sb { font-size: 15px; color: var(--grey-2); line-height: 1.7; }
+
+/* sticky side TOC — active item is the only place the highlighter appears here */
+.toc { position: fixed; top: 50%; transform: translateY(-50%); left: calc(50% - var(--max)/2 - 188px); width: 168px; opacity: 0; pointer-events: none; transition: opacity .35s; z-index: 50; }
+.toc.visible { opacity: 1; pointer-events: all; }
+.toc .proj { font-size: 13px; font-weight: 700; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.toc ul { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+.toc a { font-size: 13px; color: var(--grey); padding: 5px 0; display: inline-block; width: fit-content; }
+.toc a:hover { color: var(--ink); }
+.toc a.active { color: var(--ink); font-weight: 600; background: var(--hl); padding: 5px 4px; }
+@media (max-width: 1280px) { .toc { display: none; } }
+
+/* footer (detail + listing pages) */
+.foot { border-top: 1px solid var(--ink); padding: 34px 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.foot a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.foot .copy { color: var(--grey); font-size: 13px; }
+
+/* =========================================================
+   LISTING PAGE (Work / Concepts / Build / Write index)
+   reuses .wrap + a simple row list
+   ========================================================= */
+.list-head { padding: 80px 0 40px; }
+.list-head .eyebrow { display: block; margin-bottom: 18px; }
+.list-head h1 { font-size: clamp(44px, 6vw, 76px); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; }
+.rows { border-top: 1px solid var(--ink); margin-bottom: 60px; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: baseline; padding: 26px 4px; border-bottom: 1px solid var(--line); transition: padding-left .2s; }
+.row:hover { padding-left: 12px; }
+.row .rt { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; padding: 0 3px; transition: background .15s; }
+.row:hover .rt { background: var(--hl); }
+.row .rd { font-size: 14px; color: var(--grey-2); margin-top: 6px; max-width: 60ch; }
+.row .rm { font-size: 13px; color: var(--grey); white-space: nowrap; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  body.home { overflow: auto; }
+  .home .main-split { grid-template-columns: 1fr; gap: 56px; padding: 24px 28px 56px; align-items: start; }
+  .home .left { height: auto; }
+  .home .bio-meta { position: static; margin-top: 48px; }
+  .home .right { gap: 34px; }
+}
+@media (max-width: 760px) {
+  .top, .wrap { padding-left: 24px; padding-right: 24px; }
+  .grid { grid-template-columns: 1fr; gap: 16px; }
+  .aside { display: flex; align-items: baseline; gap: 14px; }
+  .aside .lbl { margin-top: 0; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+  .two { grid-template-columns: 1fr; gap: 0; }
+  .step { grid-template-columns: 48px 1fr; gap: 16px; }
+}
+
+/* =========================================================
+   ADDITIONAL COMPONENTS
+   ========================================================= */
+
+/* sub-headers in detail pages */
+h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; margin: 28px 0 10px; }
+h4 { font-size: 15px; font-weight: 700; margin: 18px 0 8px; }
+
+/* hero title: wrap long titles at 16 chars */
+.hero h1 { max-width: 16ch; }
+
+/* constrain body text inside a .main.wide block */
+.main.wide .body { max-width: var(--measure); }
+
+/* lists inside body copy */
+.body ul, .body ol { margin: 12px 0; padding-left: 20px; }
+.body li { margin-bottom: 8px; }
+
+/* lists / emphasis inside process steps */
+.step .sb p + p { margin-top: 10px; }
+.step .sb strong { color: var(--ink); }
+.step .sb ul, .step .sb ol { margin: 12px 0; padding-left: 18px; }
+.step .sb li { margin-bottom: 7px; }
+.step .st .phase { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); margin-left: 8px; }
+
+/* italic pull-quote */
+.quote { font-style: italic; color: var(--grey-2); padding-left: 18px; border-left: 1px solid var(--line); margin: 12px 0; font-size: 15px; }
+
+/* diagram images and screen grids */
+.diagram img { margin-top: 14px; max-width: 100%; display: block; }
+.diagram .screens { display: flex; gap: 16px; margin-top: 14px; }
+.diagram .screens img { width: 30%; border: 1px solid var(--line); }
+
+/* closing CTA section (detail pages) */
+.closing { padding: 80px 0 20px; }
+.closing h2 { font-size: clamp(30px, 4vw, 48px); font-weight: 700; letter-spacing: -0.03em; }
+.closing p { color: var(--grey-2); margin-top: 14px; font-size: 16px; }
+.closing .ctas { margin-top: 24px; display: flex; gap: 14px; }
+.closing .ctas a { font-weight: 600; border-bottom: 2px solid var(--ink); padding-bottom: 2px; }
+.closing .ctas a:hover { color: var(--grey-2); }

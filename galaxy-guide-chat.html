@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Galaxy Guide — Riley Baik</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="top">
+    <a href="index.html" class="name">Riley Baik</a>
+    <nav class="nav-center">
+      <a href="work.html">Work</a>
+      <a href="proposals.html">Proposals</a>
+      <a href="build.html">Builds</a>
+      <a href="writing.html">Writing</a>
+    </nav>
+    <div class="links">
+      <a href="https://linkedin.com/in/r-baik" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21H9z"/></svg></a>
+      <a href="mailto:rileybaik21@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm0 2v.4l9 5.6 9-5.6V7H3zm18 2.3-9 5.6-9-5.6V18h18z"/></svg></a>
+    </div>
+  </div>
+
+  <aside class="toc" id="toc">
+    <div class="proj">Galaxy Guide</div>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#problem">The Problem</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#tradeoffs">Trade-offs</a></li>
+      <li><a href="#process">Process</a></li>
+    </ul>
+  </aside>
+
+  <div class="wrap">
+
+    <header class="hero">
+      <div class="eyebrow">Work · Samsung.com</div>
+      <h1>Galaxy Guide</h1>
+      <p class="sub">An AI chatbot for Samsung.com that helps users navigate Galaxy product, feature, and offer information, reducing pre-purchase friction and cutting CS operations cost.</p>
+      <div class="meta">
+        <div><div class="l">Role</div><div class="v">Product Manager</div></div>
+        <div><div class="l">Company</div><div class="v">Samsung Electronics America</div></div>
+        <div><div class="l">Platform</div><div class="v">Web (Samsung.com)</div></div>
+        <div><div class="l">Tech</div><div class="v">LLM + RAG</div></div>
+        <div><div class="l">Scope</div><div class="v">Galaxy brand · Product · Offers</div></div>
+      </div>
+    </header>
+
+    <section class="block" id="overview">
+      <div class="grid">
+        <div class="aside"><div class="lbl">Overview</div></div>
+        <div class="main">
+          <h2 class="t">Reduce pre-purchase friction and CS operations cost with a conversational AI layer.</h2>
+          <div class="body">
+            <p>Samsung.com's product information was fragmented across brand pages, PDPs, offer pages, and support articles, forcing users to piece together answers from multiple sources. This friction caused bounce-offs and drove unnecessary inbound CS volume.</p>
+            <p>The goal was to address both sides: improve the discovery experience so users could make confident purchase decisions, and reduce the operational cost of simple, self-serviceable support inquiries. The solution was Galaxy Guide, a GPT-class LLM + RAG chatbot scoped to Galaxy brand, product, feature, and offer guidance.</p>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="n">300–500K</div><div class="sl">Monthly support contacts</div></div>
+            <div class="stat"><div class="n">40%</div><div class="sl">Product / offer-related share</div></div>
+            <div class="stat"><div class="n">60–100K</div><div class="sl">Monthly addressable inquiries</div></div>
+            <div class="stat"><div class="n"><span class="hl">$300–500K</span></div><div class="sl">Est. monthly CS cost savings</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="problem">
+      <div class="grid">
+        <div class="aside"><div class="lbl">The Problem</div></div>
+        <div class="main">
+          <h2 class="t">Fragmented information: a friction problem for users and a cost problem for the business.</h2>
+          <div class="body">
+            <p><strong>From the user side:</strong> Brand, product, offer, and support information lived in separate places. Users researching a Galaxy purchase had to navigate multiple pages and external sources (Google, Reddit, YouTube) to piece together what they needed. This extended the decision journey and caused meaningful drop-off from the D2C site.</p>
+            <p><strong>From the business side:</strong> Samsung.com's customer support chat handled 300–500K contacts per month. 40% were product or offer-related, and roughly half of those were simple informational questions, queries where the answer already existed on a PDP or offer page but users couldn't find it on their own. CS agents were spending capacity answering questions that didn't require a human.</p>
+          </div>
+          <div class="callout">
+            <span class="lead">Opportunity framing.</span> 300–500K monthly contacts × 40% product/offer share × 50% simple informational = 60–100K monthly inquiries addressable through self-service. At ~$5/contact, that's $300–500K in potential monthly CS cost savings, before any conversion impact.
+          </div>
+          <div class="two">
+            <div class="col"><div class="clabel">Goal 1 · Conversion readiness</div><p>Increase discovery engagement, including PDP view rate, time-on-site, and conversion readiness, by helping users get confident answers without leaving Samsung.com.</p></div>
+            <div class="col"><div class="clabel">Goal 2 · CS ops efficiency</div><p>Deflect simple informational inquiries from live CS agents, reducing per-contact cost and freeing agent capacity for complex support cases.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="solution">
+      <div class="grid">
+        <div class="aside"><div class="lbl">Solution</div></div>
+        <div class="main">
+          <h2 class="t">A scoped conversational AI: answer what you know, defer what you don't.</h2>
+          <div class="body">
+            <p>Galaxy Guide is a GPT-class LLM + RAG chatbot embedded on Samsung.com. Users ask questions in natural language and get relevant answers drawn from a curated knowledge base: product catalog, feature documentation, and promotion/offer pages.</p>
+            <p>Scope was deliberately constrained. The chatbot handles Galaxy brand, product, feature, and offer guidance. It explicitly declines out-of-scope questions, including order status, delivery, and troubleshooting, informing users where to go instead. This keeps hallucination risk low and trust high.</p>
+          </div>
+          <div class="callout">
+            <span class="lead">Key UX principle.</span> Users can ask as many follow-up questions as needed. If a query is out of scope, the chatbot names the limit clearly rather than guessing. Embedded CTAs link directly to relevant product or offer pages, keeping the experience within Samsung.com.
+          </div>
+          <div class="two">
+            <div class="col"><div class="clabel">Architecture</div><h4>LLM + RAG</h4><p>GPT-class model for language understanding and generation. RAG retrieves from a structured knowledge base of product catalog, feature docs, and promo links to ground answers in accurate content.</p></div>
+            <div class="col"><div class="clabel">Knowledge base scope</div><h4>Curated docs, no live API</h4><p>Product catalog, promotional documents, and feature documentation. Live API integration was explicitly excluded; reliability and hallucination prevention were prioritised over data freshness.</p></div>
+          </div>
+          <div class="diagram">
+            <div class="lbl">High-level Architecture</div>
+            <!-- replace .frame with <img src="..."> when SVG is ready -->
+            <div class="frame">Architecture diagram</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="tradeoffs">
+      <div class="grid">
+        <div class="aside"><div class="lbl">Trade-offs</div></div>
+        <div class="main wide">
+          <h2 class="t">Six scoping decisions, and why we made each one.</h2>
+          <div class="body"><p>Each decision below involved a real tension. The pattern across all of them: prioritise reliability, trust, and deliverability over completeness.</p></div>
+          <table>
+            <thead><tr><th>Decision area</th><th>Chosen</th><th>Not chosen</th><th>Rationale</th></tr></thead>
+            <tbody>
+              <tr><td>Answer scope</td><td class="chosen">Brand / product / feature / offer guidance</td><td class="no">Order status, delivery, troubleshoot</td><td>Privacy and risk control with a non-authenticated pre-purchase chatbot</td></tr>
+              <tr><td>Dynamic commerce data</td><td class="chosen">Provide official page link</td><td class="no">Directly answer price / stock / eligibility</td><td>Data freshness issues and hallucination prevention</td></tr>
+              <tr><td>Product coverage</td><td class="chosen">Galaxy products only</td><td class="no">All Samsung products</td><td>MVP scope: quality control over breadth</td></tr>
+              <tr><td>CTA format</td><td class="chosen">Embedded links inside answers</td><td class="no">Auto-routing to a specific page</td><td>In-one-page experience; user stays in context</td></tr>
+              <tr><td>AI approach</td><td class="chosen">GPT-class LLM + RAG</td><td class="no">Fine-tuned model / rule-only bot</td><td>Speed, coverage, and cost balance with no training overhead</td></tr>
+              <tr><td>Knowledge base</td><td class="chosen">Catalog + promo + feature docs</td><td class="no">Live API integration</td><td>Reliability over freshness; curated docs reduce hallucination risk</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="process">
+      <div class="grid">
+        <div class="aside"><div class="lbl">Process</div></div>
+        <div class="main">
+          <h2 class="t">From opportunity sizing to rollout.</h2>
+          <div class="steps">
+            <div class="step"><div class="sn">01</div><div><div class="st">Problem Discovery &amp; Opportunity Sizing</div><div class="sb">Analysed support chat data to identify the volume and composition of inbound CS contacts. Quantified the share of simple informational inquiries addressable through self-service. Built the opportunity sizing model ($300–500K/month) to establish the business case and secure stakeholder alignment.</div></div></div>
+            <div class="step"><div class="sn">02</div><div><div class="st">Prototype Build (MVP)</div><div class="sb">Built an early-stage prototype to validate the RAG retrieval approach against real user queries. Used it to test knowledge base coverage, identify scope gaps, and assess answer quality before committing to full product spec.</div></div></div>
+            <div class="step"><div class="sn">03</div><div><div class="st">Product Definition</div><div class="sb">Defined product scope, answer boundaries, and out-of-scope handling. Established evaluation criteria and success metrics. Made the six trade-off decisions above based on prototype learnings and risk analysis.</div></div></div>
+            <div class="step"><div class="sn">04</div><div><div class="st">Delivery &amp; Alpha Testing</div><div class="sb">Managed delivery with engineering. Ran alpha testing with internal users to evaluate answer quality, edge-case handling, and out-of-scope deflection. Iterated on knowledge base coverage and prompt design based on findings.</div></div></div>
+            <div class="step"><div class="sn">05</div><div><div class="st">A/B Testing &amp; Rollout</div><div class="sb">Ran A/B testing to measure impact on PDP view rate, session depth, and CS contact deflection. Used results to inform rollout decisions and prioritise the next iteration of knowledge base and scope expansion.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      <a href="work.html">← Back to Work</a>
+      <span class="copy">© 2026 Riley Baik</span>
+      <a href="#top">↑ Top</a>
+    </div>
+
+  </div>
+
+  <script>
+    const toc = document.getElementById('toc');
+    const hero = document.querySelector('.hero');
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('.toc a');
+    new IntersectionObserver(([e]) => { toc.classList.toggle('visible', !e.isIntersecting); }, { threshold: 0 }).observe(hero);
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) {
+        links.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }});
+    }, { rootMargin: '-15% 0px -70% 0px' });
+    sections.forEach(s => obs.observe(s));
+    links.forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+  </script>
+</body>
+</html>
