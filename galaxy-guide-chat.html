@@ -27,6 +27,7 @@
     <ul>
       <li><a href="#overview">Overview</a></li>
       <li><a href="#problem">The Problem</a></li>
+      <li><a href="#opportunity">Opportunity & Goal</a></li>
       <li><a href="#solution">Solution</a></li>
       <li><a href="#tradeoffs">Trade-offs</a></li>
       <li><a href="#process">Process</a></li>
@@ -37,14 +38,12 @@
 
     <header class="hero">
       <div class="eyebrow">Work · Samsung.com</div>
-      <h1>Galaxy Guide</h1>
-      <p class="sub">An AI chatbot for Samsung.com that helps users navigate Galaxy product, feature, and offer information, reducing pre-purchase friction and cutting CS operations cost.</p>
+      <h1>A Conversational AI Shopping Assistant: Galaxy Guide</h1>
+      <p class="sub">An LLM + RAG shopping assistant for Samsung.com that helps Galaxy shoppers get trustworthy answers to product, feature, and offer questions, improving purchase confidence while reducing avoidable customer support contacts.</p>
       <div class="meta">
-        <div><div class="l">Role</div><div class="v">Product Manager</div></div>
-        <div><div class="l">Company</div><div class="v">Samsung Electronics America</div></div>
-        <div><div class="l">Platform</div><div class="v">Web (Samsung.com)</div></div>
-        <div><div class="l">Tech</div><div class="v">LLM + RAG</div></div>
-        <div><div class="l">Scope</div><div class="v">Galaxy brand · Product · Offers</div></div>
+        <div><div class="l">Domain</div><div class="v">E-commerce · Conversational AI · Customer Support</div></div>
+        <div><div class="l">Tech</div><div class="v">LLM · RAG · Vector Retrieval</div></div>
+        
       </div>
     </header>
 
@@ -52,7 +51,7 @@
       <div class="grid">
         <div class="aside"><div class="lbl">Overview</div></div>
         <div class="main">
-          <h2 class="t">Reduce pre-purchase friction and CS operations cost with a conversational AI layer.</h2>
+          <h2 class="t">Reduce pre-purchase friction and CS operations cost with a conversational AI.</h2>
           <div class="body">
             <p>Samsung.com's product information was fragmented across brand pages, PDPs, offer pages, and support articles, forcing users to piece together answers from multiple sources. This friction caused bounce-offs and drove unnecessary inbound CS volume.</p>
             <p>The goal was to address both sides: improve the discovery experience so users could make confident purchase decisions, and reduce the operational cost of simple, self-serviceable support inquiries. The solution was Galaxy Guide, a GPT-class LLM + RAG chatbot scoped to Galaxy brand, product, feature, and offer guidance.</p>
@@ -76,16 +75,27 @@
             <p><strong>From the user side:</strong> Brand, product, offer, and support information lived in separate places. Users researching a Galaxy purchase had to navigate multiple pages and external sources (Google, Reddit, YouTube) to piece together what they needed. This extended the decision journey and caused meaningful drop-off from the D2C site.</p>
             <p><strong>From the business side:</strong> Samsung.com's customer support chat handled 300–500K contacts per month. 40% were product or offer-related, and roughly half of those were simple informational questions, queries where the answer already existed on a PDP or offer page but users couldn't find it on their own. CS agents were spending capacity answering questions that didn't require a human.</p>
           </div>
-          <div class="callout">
-            <span class="lead">Opportunity framing.</span> 300–500K monthly contacts × 40% product/offer share × 50% simple informational = 60–100K monthly inquiries addressable through self-service. At ~$5/contact, that's $300–500K in potential monthly CS cost savings, before any conversion impact.
-          </div>
-          <div class="two">
-            <div class="col"><div class="clabel">Goal 1 · Conversion readiness</div><p>Increase discovery engagement, including PDP view rate, time-on-site, and conversion readiness, by helping users get confident answers without leaving Samsung.com.</p></div>
-            <div class="col"><div class="clabel">Goal 2 · CS ops efficiency</div><p>Deflect simple informational inquiries from live CS agents, reducing per-contact cost and freeing agent capacity for complex support cases.</p></div>
-          </div>
         </div>
       </div>
     </section>
+
+<section class="block" id="opportunity">
+  <div class="grid">
+    <div class="aside"><div class="lbl">Opportunity &amp; Goal</div></div>
+    <div class="main">
+      <h2 class="t">A self-service answer with generative AI with a measurable cost and conversion upside.</h2>
+      <div class="body">
+            <p><strong>Opportunity sizing</strong> <br>
+              300–500K monthly contacts × 40% product/offer share × 50% simple informational = 60–100K monthly inquiries addressable through self-service. At ~$5/contact, that's $300–500K in potential monthly CS cost savings, before any conversion impact.
+      </div>
+        <div class="callout">
+              <span class="lead">Goal 1 · Conversion readiness (from user experience)</span> <br> Increase discovery engagement, including PDP view rate, time-on-site, and conversion readiness, by helping users get confident answers without leaving Samsung.com.
+        </div>
+        <div class="callout">
+              <span class="lead">Goal 2 · CS ops efficiency (from business cost-saving)</span> <br> Deflect simple informational inquiries from live CS agents, reducing per-contact cost and freeing agent capacity for complex support cases.
+        </div>
+  </div>
+</section>
 
     <section class="block" id="solution">
       <div class="grid">
@@ -93,20 +103,20 @@
         <div class="main">
           <h2 class="t">A scoped conversational AI: answer what you know, defer what you don't.</h2>
           <div class="body">
-            <p>Galaxy Guide is a GPT-class LLM + RAG chatbot embedded on Samsung.com. Users ask questions in natural language and get relevant answers drawn from a curated knowledge base: product catalog, feature documentation, and promotion/offer pages.</p>
-            <p>Scope was deliberately constrained. The chatbot handles Galaxy brand, product, feature, and offer guidance. It explicitly declines out-of-scope questions, including order status, delivery, and troubleshooting, informing users where to go instead. This keeps hallucination risk low and trust high.</p>
+            <p>Galaxy Guide is a GPT-class LLM + RAG chat experience on Samsung.com. Users ask questions in natural language and get relevant answers and relevant link from a selected knowledge base: brand information, product catalog, feature documentation, and promotion/offer pages.</p>
+            <p>The chatbot handles Galaxy brand, product, feature, and offer guidance only. It explicitly declines out-of-scope questions, such as order status, delivery, and troubleshooting, informing users where to go instead. This keeps hallucination risk low and trust high.</p>
           </div>
           <div class="callout">
             <span class="lead">Key UX principle.</span> Users can ask as many follow-up questions as needed. If a query is out of scope, the chatbot names the limit clearly rather than guessing. Embedded CTAs link directly to relevant product or offer pages, keeping the experience within Samsung.com.
           </div>
           <div class="two">
             <div class="col"><div class="clabel">Architecture</div><h4>LLM + RAG</h4><p>GPT-class model for language understanding and generation. RAG retrieves from a structured knowledge base of product catalog, feature docs, and promo links to ground answers in accurate content.</p></div>
-            <div class="col"><div class="clabel">Knowledge base scope</div><h4>Curated docs, no live API</h4><p>Product catalog, promotional documents, and feature documentation. Live API integration was explicitly excluded; reliability and hallucination prevention were prioritised over data freshness.</p></div>
+            <div class="col"><div class="clabel">Knowledge base scope</div><h4>Curated docs</h4><p>Product catalog, promotional documents, and feature documentation. Live API integration was explicitly excluded; reliability and hallucination prevention were prioritised over data freshness.</p></div>
           </div>
           <div class="diagram">
             <div class="lbl">High-level Architecture</div>
-            <!-- replace .frame with <img src="..."> when SVG is ready -->
-            <div class="frame">Architecture diagram</div>
+            <!-- replace .frame with <img src="diagram_chatbot.svg"> when SVG is ready -->
+            <div class="frame"><img src="diagram_chatbot.svg"></div>
           </div>
         </div>
       </div>
@@ -116,7 +126,7 @@
       <div class="grid">
         <div class="aside"><div class="lbl">Trade-offs</div></div>
         <div class="main wide">
-          <h2 class="t">Six scoping decisions, and why we made each one.</h2>
+          <h2 class="t">Six scoping decisions, and why I made each one.</h2>
           <div class="body"><p>Each decision below involved a real tension. The pattern across all of them: prioritise reliability, trust, and deliverability over completeness.</p></div>
           <table>
             <thead><tr><th>Decision area</th><th>Chosen</th><th>Not chosen</th><th>Rationale</th></tr></thead>
@@ -152,7 +162,7 @@
     <div class="foot">
       <a href="work.html">← Back to Work</a>
       <span class="copy">© 2026 Riley Baik</span>
-      <a href="#top">↑ Top</a>
+      <a href=" "> </a>
     </div>
 
   </div>

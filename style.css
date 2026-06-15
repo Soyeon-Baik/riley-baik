@@ -77,7 +77,7 @@ body.home { min-height: 100vh; display: flex; flex-direction: column; overflow: 
 .hero { padding: 80px 0 8px; }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--grey-2); }
 .hero h1 { font-size: clamp(52px, 8vw, 104px); font-weight: 700; letter-spacing: -0.045em; line-height: 0.95; margin: 26px 0 22px; }
-.hero .sub { font-size: 19px; color: var(--grey-2); max-width: 62ch; line-height: 1.5; }
+.hero .sub { font-size: 19px; color: var(--grey-2); width: min(62ch, 100%); line-height: 1.5; }
 
 .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 26px; margin-top: 46px; padding: 28px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
 .meta .l { font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey); margin-bottom: 7px; }
@@ -210,6 +210,7 @@ h4 { font-size: 15px; font-weight: 700; margin: 18px 0 8px; }
 
 /* diagram images and screen grids */
 .diagram img { margin-top: 14px; max-width: 100%; display: block; }
+.diagram iframe { margin-top: 14px; width: 100%; height: 660px; border: 1px solid var(--line); display: block; }
 .diagram .screens { display: flex; gap: 16px; margin-top: 14px; }
 .diagram .screens img { width: 30%; border: 1px solid var(--line); }
 
@@ -220,3 +221,27 @@ h4 { font-size: 15px; font-weight: 700; margin: 18px 0 8px; }
 .closing .ctas { margin-top: 24px; display: flex; gap: 14px; }
 .closing .ctas a { font-weight: 600; border-bottom: 2px solid var(--ink); padding-bottom: 2px; }
 .closing .ctas a:hover { color: var(--grey-2); }
+
+/* =========================================================
+   WRITING / ESSAY  (centered reading column)
+   ========================================================= */
+.essay { max-width: var(--measure); margin: 0 auto; padding: 0 24px; }
+.essay .hero { padding: 72px 0 30px; border-bottom: 1px solid var(--ink); }
+.essay .hero h1 { font-size: clamp(36px, 5vw, 58px); max-width: none; margin: 22px 0 20px; line-height: 1.02; }
+.essay .hero .sub { font-size: 19px; }
+
+.article { padding: 44px 0 24px; font-size: 17px; color: var(--grey-2); line-height: 1.8; }
+.article > p { margin-bottom: 18px; }
+.article p strong, .article li strong { color: var(--ink); font-weight: 700; }
+.article h2 { font-size: clamp(21px, 3vw, 27px); font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.25; margin: 52px 0 16px; }
+.article h2:first-child { margin-top: 0; }
+.article ul { margin: 16px 0 20px; padding-left: 22px; }
+.article li { margin-bottom: 9px; }
+.article blockquote { margin: 32px 0; padding: 6px 0 6px 24px; border-left: 2px solid var(--ink); }
+.article blockquote p { font-size: 20px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.45; letter-spacing: -0.01em; }
+
+/* steps reused for the takeaway timeline — tighter, no title row */
+.article .steps { margin: 24px 0 8px; }
+.article .step { grid-template-columns: 48px 1fr; padding: 18px 0; align-items: center; }
+.article .step .sn { font-size: 22px; }
+.article .step .sb { font-size: 16px; color: var(--ink); }

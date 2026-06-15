@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>A Practical Framework for AI Evals — Riley Baik</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="top">
+    <a href="index.html" class="name">Riley Baik</a>
+    <nav class="nav-center">
+      <a href="work.html">Work</a>
+      <a href="proposals.html">Proposals</a>
+      <a href="build.html">Builds</a>
+      <a href="writing.html">Writing</a>
+    </nav>
+    <div class="links">
+      <a href="https://linkedin.com/in/r-baik" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2 1.4-2 2.8V21H9z"/></svg></a>
+      <a href="mailto:rileybaik21@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm0 2v.4l9 5.6 9-5.6V7H3zm18 2.3-9 5.6-9-5.6V18h18z"/></svg></a>
+    </div>
+  </div>
+
+  <div class="essay">
+
+    <header class="hero">
+      <div class="eyebrow">AI Product · Mar 2026</div>
+      <h1>A Practical Framework for AI Evals</h1>
+      <p class="sub">AI products are probabilistic. The same input can yield different outputs, so evaluating them requires a more structured and layered approach than traditional products.</p>
+    </header>
+
+    <article class="article">
+
+      <p>Most traditional products are deterministic. When the same input is given, the system produces the same output based on predefined logic. Success can be measured through clearly defined user flows and metrics.</p>
+      <p>AI products, however, are inherently probabilistic. The same input can yield different outputs. While we can tune parameters like temperature or tone, the output is not guaranteed to be consistent. Because of this, evaluating AI products requires a more structured and layered approach.</p>
+      <p>This post outlines a practical, end-to-end framework for evaluating AI-powered products with a real-world example.</p>
+
+      <h2>0. Define What Success Means</h2>
+      <p>As always, the first step is to clearly define what success looks like.</p>
+      <p>For AI products, this should be defined at two levels, for both the user and the product. I recommend starting from user-level success and then breaking it down into product-level metrics.</p>
+      <p><strong>User-level success</strong></p>
+      <ul>
+        <li>Did the user accomplish their goal?</li>
+        <li>Did the system reduce effort or time?</li>
+      </ul>
+      <p><strong>Product-level success</strong></p>
+      <ul>
+        <li>Task success rate</li>
+        <li>Time to resolution</li>
+        <li>User satisfaction</li>
+      </ul>
+      <p>For example, in a conversational product discovery experience, success is about helping users find the right products or information more easily and quickly, so they can make confident purchase decisions.</p>
+      <p>Without this step, evaluation becomes disconnected from actual user value and risks over-optimizing proxy metrics.</p>
+
+      <h2>1. Establish a Golden Dataset</h2>
+      <p>Once success is defined, the next step is to create a reliable evaluation baseline, a golden dataset.</p>
+      <p>A <strong>golden dataset</strong> consists of input-output pairs. Inputs are real user queries (including long-tail and ambiguous cases), and ideal outputs are high-quality responses defined with domain experts.</p>
+      <p>In a brand chatbot context, this step involves categorizing use cases by user intent, such as product discovery, comparison, and support-related queries, and defining corresponding answer sets. In practice, I worked closely with domain experts (e.g., brand managers, marketing teams) to define what good responses look like across these use cases.</p>
+      <p>This dataset provides a consistent standard for measuring system quality and enables repeatable evaluation.</p>
+
+      <h2>2. Offline Evaluation (System Quality)</h2>
+      <p>Offline evaluation measures how well the system performs in a controlled environment before production. Typical evaluation approaches include the following:</p>
+      <ul>
+        <li>Rubric-based scoring (manual or model-assisted)</li>
+        <li>Accuracy and factuality checks</li>
+        <li>Hallucination detection</li>
+        <li>Coverage of edge cases</li>
+      </ul>
+      <p>For example, in a product-focused chatbot, offline evaluation can measure whether responses correctly recommend relevant products and provide sufficient supporting details (e.g., key features, differences).</p>
+      <p>At this stage, the key question is "Can the system produce high-quality outputs?"</p>
+      <p>In this stage, two complementary approaches help scale offline evaluation.</p>
+      <p>First, LLM-as-judge uses a separate language model to score responses against a rubric. This enables fast and repeatable evaluation across large response sets.</p>
+      <p>Second, human-in-the-loop review runs in parallel. Domain experts periodically validate a sample of the golden dataset to ensure the rubric remains reliable and to catch blind spots that automated scoring may overlook.</p>
+
+      <h2>3. Online Experimentation (Controlled Comparison)</h2>
+      <p>Once baseline quality is established, it's time to test it in a live but controlled environment through experimentation.</p>
+      <p>This stage focuses on comparing variants, not measuring final success.</p>
+      <p>Typical experiments include:</p>
+      <ul>
+        <li>Different prompting strategies</li>
+        <li>Retrieval configurations (e.g., number or type of documents)</li>
+        <li>Response formats (e.g., concise vs. structured with explanations)</li>
+      </ul>
+      <p>These experiments test system-level variations that run on top of the same underlying model (rather than testing different models themselves).</p>
+      <p>For example, one variant might use a concise response with minimal context, while another uses a more structured format with richer context and citations. In one case, I tested these variations to understand which better supports user decision-making during product discovery.</p>
+      <p>Metrics at this stage are comparative signals, such as:</p>
+      <ul>
+        <li>Click-through rate (CTR)</li>
+        <li>Re-try rate</li>
+        <li>Conversation completion</li>
+      </ul>
+      <p>The key question here is, "Which version performs better relative to another?"</p>
+      <p>This stage helps identify better configurations. However, it does not yet confirm whether the product is truly effective.</p>
+
+      <h2>4. Behavioral &amp; Outcome Metrics (Real Impact)</h2>
+      <p>Now, after selecting the strongest variant, it's time to measure actual user impacts.</p>
+      <p>This stage answers a fundamentally different question, "Did the product actually help the user achieve their goal?"</p>
+      <p>Unlike online experimentation, this is not about comparing versions, but about validating real impact and measuring success based on what we defined from the start.</p>
+      <p>Key metrics include:</p>
+      <ul>
+        <li>Task completion rate</li>
+        <li>Reduction in follow-up queries</li>
+        <li>Conversion or downstream actions</li>
+        <li>User satisfaction</li>
+      </ul>
+      <p>For example, even if a chatbot increases CTR or engagement, a high rate of follow-up questions may indicate that responses are not fully resolving user needs.</p>
+
+      <h2>5. Continuous Feedback Loop</h2>
+      <p>Like any other product, AI products require continuous iteration.</p>
+      <p>Feedback signals include the following:</p>
+      <ul>
+        <li>Explicit product feedback (ratings, thumbs up/down)</li>
+        <li>Implicit behavioral signals (query reformulation, abandonment, repeated interactions)</li>
+      </ul>
+      <p>These signals can be used to continuously improve the system by:</p>
+      <ul>
+        <li>Improving prompts or retrieval strategies</li>
+        <li>Refining ranking logic</li>
+        <li>Updating training data</li>
+      </ul>
+      <blockquote><p>Evaluate → Learn → Improve → Re-evaluate.</p></blockquote>
+      <p>This loop is what enables AI products to continuously improve and stay aligned with real user needs.</p>
+
+      <h2>Evaluation Principles: Helpful, Honest, Harmless</h2>
+      <p>Across all of these stages, there's one framework that I keep in the back of my mind: the "HHH" (Helpful, Honest, and Harmless) framework from Anthropic. This is a useful northstar for setting quality criteria.</p>
+      <p>In my experience, this framework is especially useful for translating abstract evaluation goals into concrete criteria:</p>
+      <ul>
+        <li><strong>Helpful.</strong> Does the response actually solve the user's problem? Measured through task completion and relevance.</li>
+        <li><strong>Honest.</strong> Does the product avoid making up information when uncertain? Does it clearly acknowledge when information is unavailable? Evaluated through hallucination checks and fallback behavior.</li>
+        <li><strong>Harmless.</strong> Does the system avoid unsafe guidance or inappropriate responses? Enforced through policy constraints and safety evaluation.</li>
+      </ul>
+      <p>In practice, I always think about whether the system is hitting all three at the same time. Embedding these principles into evaluation criteria ensures the system is not only effective, but also trustworthy.</p>
+
+      <h2>Key Takeaways</h2>
+      <p>Evaluating AI products is not a one-time process. It requires a layered framework that connects model performance to real user outcomes by following these steps:</p>
+      <div class="steps">
+        <div class="step"><div class="sn">01</div><div class="sb">Define success based on user goals</div></div>
+        <div class="step"><div class="sn">02</div><div class="sb">Build a golden dataset</div></div>
+        <div class="step"><div class="sn">03</div><div class="sb">Evaluate system quality offline</div></div>
+        <div class="step"><div class="sn">04</div><div class="sb">Compare variants through experimentation</div></div>
+        <div class="step"><div class="sn">05</div><div class="sb">Measure real-world outcomes</div></div>
+        <div class="step"><div class="sn">06</div><div class="sb">Continuously improve through feedback</div></div>
+      </div>
+      <p>Ultimately, strong AI products are not defined by how well they generate responses, but by how effectively they help users accomplish what they came for.</p>
+
+    </article>
+
+    <div class="foot">
+      <a href="writing.html">← Back to Writing</a>
+      <span class="copy">© 2026 Riley Baik</span>
+      <a href="#">↑ Top</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
