@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Hybrid AI-Search at Samsung.com — Riley Baik</title>
+<title>Hybrid AI-Powered Search at Samsung.com — Riley Baik</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -37,13 +37,11 @@
 
     <header class="hero">
       <div class="eyebrow">Work · Samsung.com</div>
-      <h1>Hybrid AI-Search at Samsung.com</h1>
+      <h1>Hybrid AI-powered Product Search</h1>
       <p class="sub">Improving on-site search relevance by selectively augmenting lexical retrieval with semantic understanding.</p>
       <div class="meta">
-        <div><div class="l">Role</div><div class="v">Product Manager</div></div>
-        <div><div class="l">Company</div><div class="v">Samsung Electronics America</div></div>
-        <div><div class="l">Timeline</div><div class="v">2022–2024</div></div>
         <div><div class="l">Domain</div><div class="v">E-commerce · Search · AI/ML</div></div>
+        <div><div class="l">Tech</div><div class="v">Vector embeddings · Semantic retrieval · Hybrid ranking</div></div>
       </div>
     </header>
 
@@ -51,12 +49,9 @@
       <div class="grid">
         <div class="aside"><div class="lbl">Overview</div></div>
         <div class="main">
-          <h2 class="t">Improve search relevance without replacing what already works.</h2>
+          <h2 class="t">Improve intent-driven search while preserving exact-match precision.</h2>
           <div class="body">
-            <p><strong>Problem:</strong> Lexical search worked for exact queries, but broke down on ambiguous, long-tail, and natural-language shopping intent.</p>
-            <p><strong>Solution:</strong> Add semantic retrieval selectively while preserving the lexical pipeline for exact-match queries.</p>
-            <p><strong>AI role:</strong> Use embeddings and vector retrieval to understand query intent beyond keyword overlap.</p>
-            <p><strong>PM focus:</strong> Phase rollout, define retrieval quality metrics, and protect exact-match precision while improving semantic recall.</p>
+            <p>Samsung.com site search relied primarily on keyword-based lexical matching, which worked well for exact product queries but struggled with ambiguous, long-tail, and natural-language shopping intent. We selectively introduced semantic retrieval to improve recall for intent-driven searches while preserving lexical search for high-precision exact matches. As the PM, I defined the solution strategy, retrieval quality metrics, and phased rollout plan, delivering a 30% lift in Precision@3 and a 45% increase in first-result CTR.</p>
           </div>
         </div>
       </div>
@@ -66,9 +61,9 @@
       <div class="grid">
         <div class="aside"><div class="lbl">The Problem</div></div>
         <div class="main">
-          <h2 class="t">Lexical search broke down on ambiguous and long-tail queries.</h2>
+          <h2 class="t">Keyword-based search failed on ambiguous and long-tail queries.</h2>
           <div class="body">
-            <p>Samsung.com's on-site search was built primarily on keyword matching logic. That worked well for exact queries, but failed when intent was ambiguous. A search like "Galaxy Watch" could return a mix of phones, watches, and TVs because the engine matched shared tokens (keywords) rather than actual shopping intent.</p>
+            <p>Samsung.com's on-site search was built primarily on keyword matching logic (lexical search). That worked well for exact queries, but failed when intent was ambiguous. A search like "Galaxy Watch" could return a mix of phones, watches, and TVs because the engine matched shared tokens (keywords) rather than actual shopping intent.</p>
             <p>The short-term fix was to layer on rules: category dictionaries, synonym maps, homonym handling, and redirect logic. Each rule addressed a specific failure case, but the system became increasingly brittle. Fixing one query could create regressions elsewhere, and surfacing the right products meant managing an exception list that grew faster than the team could keep up with.</p>
           </div>
         </div>
@@ -79,9 +74,10 @@
       <div class="grid">
         <div class="aside"><div class="lbl">The Solution</div></div>
         <div class="main">
-          <h2 class="t">A hybrid system: semantic retrieval where lexical fails, lexical where it still works.</h2>
+          <h2 class="t">A hybrid system: semantic retrieval where keywords fail, keyword matching where they still work.</h2>
           <div class="body">
-            <p>AI could improve relevance for ambiguous queries, but introducing it raised two questions: where to apply it, and how to integrate it. The solution was a hybrid AI search system: a semantic layer was added for ambiguous queries where keyword matching was failing, while the existing lexical pipeline continued to handle exact-match queries.</p>
+            <p>AI could improve relevance for ambiguous queries, but introducing it raised two questions: where to apply it, and how to integrate it. The solution was a hybrid AI search system: a semantic layer was added for ambiguous queries where keyword matching was failing, while the existing lexical pipeline continued to handle exact-match queries. </p>
+            <p>Two decisions shaped this approach. </p>
           </div>
           <div class="steps">
             <div class="step">
@@ -107,7 +103,7 @@
       <div class="grid">
         <div class="aside"><div class="lbl">Trade-offs</div></div>
         <div class="main">
-          <h2 class="t">Three tensions, and how we resolved each.</h2>
+          <h2 class="t">Three tensions, and how I resolved each.</h2>
           <div class="body">
             <p><strong>Semantic recall vs. exact-match precision.</strong> Semantic retrieval improved ambiguous queries, but applying it universally risked over-generalizing exact product searches and returning related but unintended results.</p>
             <p><strong>Generalization vs. explainability.</strong> Rule-based systems were brittle but easy to trace. Vector retrieval handled new query patterns without hand-coded rules, but the cost was explainability. When results were wrong, it was harder to diagnose the cause. This was a concern for business and category management teams, who needed to understand why specific products surfaced. I treated this as a rollout risk and managed it through phased rollout, query-level evaluation, and metric monitoring so regressions could be caught before full roll-out.</p>
@@ -121,7 +117,7 @@
       <div class="grid">
         <div class="aside"><div class="lbl">Impact</div></div>
         <div class="main">
-          <h2 class="t">Retrieval quality gains that translated into shopping behavior.</h2>
+          <h2 class="t">Search quality improvements that customers responded to.</h2>
           <div class="body">
             <p>The rollout was evaluated across two layers: retrieval quality (Precision@3, MRR, Recall) and user behavior (search CTR, search-assisted conversion, query reformulation rate). This combination ensured improvements in semantic relevance translated into actual shopping behavior change.</p>
           </div>
